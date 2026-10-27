@@ -3,36 +3,36 @@
 
 
 var TYPES = {
-  plast: { name:'Пластовой 5%', sub:'влажный, слоями', full:'Творог пластовой 5%', w:0.78, rec:'soft', A:{soft:70, yogurt:70}, eq:70, time:[55,60], n:[121,17,5,1.8],
+  plast: { name:'Пластовой 5%', sub:'влажный, слоями', full:'Творог пластовой 5%', w:0.78, rec:'soft', A:{soft:70, yogurt:70}, eq:70, time:[55,60], n:[121,17,5,1.8,0],
     why:'Пластовой творог и так влажный и с кислинкой, а мягкий творог добавит сливочности без лишней кислоты.',
     alt:'Йогурт кладите столько же, запеканка выйдет чуть кисловатее.',
     prep:'Слейте сыворотку из упаковки. Отжимать творог не нужно.' },
-  plast9: { name:'Пластовой 9%', sub:'жирнее, нежнее', full:'Творог пластовой 9%', w:0.75, rec:'yogurt', A:{yogurt:60, soft:60}, eq:64, time:[55,60], n:[159,16,9,3],
+  plast9: { name:'Пластовой 9%', sub:'жирнее, нежнее', full:'Творог пластовой 9%', w:0.75, rec:'yogurt', A:{yogurt:60, soft:60}, eq:64, time:[55,60], n:[159,16,9,3,0],
     why:'Жирный пластовой творог и так сливочный: йогурт добавит лёгкости и свежей кислинки.',
     alt:'Мягкий творог кладите столько же: выйдет ещё сливочнее и калорийнее.',
     prep:'Слейте сыворотку из упаковки, если она есть. Отжимать творог не нужно.' },
-  brick: { name:'В брикетах 5%', sub:'плотный', full:'Творог в брикетах 5%', w:0.74, rec:'yogurt', A:{yogurt:100, soft:100}, eq:65, time:[55,55], n:[121,17.2,5,1.8],
+  brick: { name:'В брикетах 5%', sub:'плотный', full:'Творог в брикетах 5%', w:0.74, rec:'yogurt', A:{yogurt:100, soft:100}, eq:65, time:[55,55], n:[121,17.2,5,1.8,0],
     why:'Брикетный творог плотный, а йогурт сделает массу мягче и поможет блендеру.',
     alt:'Мягкий творог кладите столько же, масса выйдет чуть гуще и сливочнее.',
     prep:'Разомните брикеты вилкой, чтобы блендеру было легче.' },
-  dry: { name:'Сухой 5%', sub:'рассыпчатый', full:'Творог сухой (рассыпчатый) 5%', w:0.70, rec:'yogurt', A:{yogurt:140, soft:175}, eq:55, time:[50,55], n:[121,17.2,5,1.8],
+  dry: { name:'Сухой 5%', sub:'рассыпчатый', full:'Творог сухой (рассыпчатый) 5%', w:0.70, rec:'yogurt', A:{yogurt:140, soft:175}, eq:55, time:[50,55], n:[121,17.2,5,1.8,0],
     why:'Сухому творогу нужна влага: йогурт даёт её лучше всего и оживляет вкус лёгкой кислинкой.',
     alt:'Мягкого творога нужно на четверть больше, чем йогурта: он гуще. Запеканка выйдет плотнее.',
     prep:'Сухой творог пробивайте в 2–3 приёма. Если блендер не справляется, добавьте к творогу взбитые яйца.' }
 };
 var ADD = {
-  soft:   { name:'Мягкий творог', short:'мягкий творог', wEff:0.64, n:[100,9,5,3.5] },
-  yogurt: { name:'Греческий йогурт', short:'греческий йогурт', wEff:0.80, n:[66,8,2,4] }
+  soft:   { name:'Мягкий творог', short:'мягкий творог', wEff:0.64, n:[100,9,5,3.5, 0] },
+  yogurt: { name:'Греческий йогурт', short:'греческий йогурт', wEff:0.80, n:[66,8,2,4, 0] }
 };
 var FL = {
-  oat:     { name:'Овсяная мука',    acc:'овсяную',    gen:'овсяной',    c:1,    n:[369,13,6.8,64.9] },
-  rice:    { name:'Рисовая мука',    acc:'рисовую',    gen:'рисовой',    c:1,    n:[366,6,1.4,80.2] },
-  wheat:   { name:'Пшеничная мука',  acc:'пшеничную',  gen:'пшеничной',  c:1,    n:[334,10.3,1.1,68.9] },
-  almond:  { name:'Миндальная мука', acc:'миндальную', gen:'миндальной', c:0.67, n:[610,24,52,13] },
-  coconut: { name:'Кокосовая мука',  acc:'кокосовую',  gen:'кокосовой',  c:1.6,  n:[340,20,13,21] },
-  corn:    { name:'Кукурузная мука', acc:'кукурузную', gen:'кукурузной', c:1,    n:[331,7.2,1.5,72.1] },
-  ricew:   { name:'Рисовая цельнозерновая мука', acc:'рисовую цельнозерновую', gen:'рисовой цельнозерновой', c:1.05, n:[360,7.5,2.7,76] },
-  buck:    { name:'Гречневая мука (зелёная)', acc:'гречневую', gen:'гречневой', c:1.05, n:[335,12.6,3.3,62] }
+  oat:     { name:'Овсяная мука',    acc:'овсяную',    gen:'овсяной',    c:1,    n:[369,13,6.8,64.9, 10] },
+  rice:    { name:'Рисовая мука',    acc:'рисовую',    gen:'рисовой',    c:1,    n:[366,6,1.4,80.2, 2.4] },
+  wheat:   { name:'Пшеничная мука',  acc:'пшеничную',  gen:'пшеничной',  c:1,    n:[334,10.3,1.1,68.9, 3.5] },
+  almond:  { name:'Миндальная мука', acc:'миндальную', gen:'миндальной', c:0.67, n:[610,24,52,13, 10] },
+  coconut: { name:'Кокосовая мука',  acc:'кокосовую',  gen:'кокосовой',  c:1.6,  n:[340,20,13,21, 39] },
+  corn:    { name:'Кукурузная мука', acc:'кукурузную', gen:'кукурузной', c:1,    n:[331,7.2,1.5,72.1, 7.3] },
+  ricew:   { name:'Рисовая цельнозерновая мука', acc:'рисовую цельнозерновую', gen:'рисовой цельнозерновой', c:1.05, n:[360,7.5,2.7,76, 4.6] },
+  buck:    { name:'Гречневая мука (зелёная)', acc:'гречневую', gen:'гречневой', c:1.05, n:[335,12.6,3.3,62, 10] }
 };
 /* Отсортировано от лучших к менее удачным. parts — доли «впитывающей силы» муки; types — для каких творогов показывать (нет = для всех) */
 var BLENDS = {
@@ -52,11 +52,11 @@ var BLENDS = {
 };
 function blendAllowed(b, type){ var bl = BLENDS[b]; return !!bl && (!bl.types || bl.types.indexOf(type) >= 0); }
 var EXTRAS = {
-  zest:     { name:'Цедра лимона или апельсина', perKg:2,  n:[47,1.5,0.3,16] },
-  cinnamon: { name:'Корица',                     perKg:1,  n:[247,4,1.2,81] },
-  raisins:  { name:'Изюм или курага',            perKg:70, n:[264,2.9,0.6,66], note:'Залить кипятком на 10 минут и обсушить' }
+  zest:     { name:'Цедра лимона или апельсина', perKg:2,  n:[47,1.5,0.3,16, 10.6] },
+  cinnamon: { name:'Корица',                     perKg:1,  n:[247,4,1.2,81, 53] },
+  raisins:  { name:'Изюм или курага',            perKg:70, n:[264,2.9,0.6,66, 3.2], note:'Залить кипятком на 10 минут и обсушить' }
 };
-var NUTR = { egg:[157,12.7,11.5,0.7], yolk:[352,16.2,31.2,1], sugar:[399,0,0,99.8], vanilla:[288,0.1,0.1,12.7], salt:[0,0,0,0] };
+var NUTR = { egg:[157,12.7,11.5,0.7, 0], yolk:[352,16.2,31.2,1, 0], sugar:[399,0,0,99.8, 0], vanilla:[288,0.1,0.1,12.7, 0], salt:[0,0,0,0, 0] };
 var PER_KG = { egg:160, sugar:70, vanilla:4, salt:1 }; /* на 1 кг творога при рекомендованной добавке */
 var EGG_G = 50, YOLK_G = 17; /* яйца всегда целые, среднее яйцо без скорлупы 50 г */
 /* Верх: количество зависит от площади формы (слой около 4 см) */
@@ -70,11 +70,12 @@ var TOPS = {
 };
 function topItems(key, area){
   var y = Math.max(1, Math.round(area/450));
-  if (key === 'yolkyog') return [{ k:'yolk', name:'Желток', cnt:y, g:y*YOLK_G, n:NUTR.yolk }, { k:'yogurt', name:'Греческий йогурт', g:area*0.025, n:ADD.yogurt.n }];
+  function r5(g){ return Math.max(5, Math.round(g/5)*5); }
+  if (key === 'yolkyog') return [{ k:'yolk', name:'Желток', cnt:y, g:y*YOLK_G, n:NUTR.yolk }, { k:'yogurt', name:'Греческий йогурт', g:r5(area*0.025), n:ADD.yogurt.n }];
   if (key === 'yolk') return [{ k:'yolk', name:'Желток', cnt:y, g:y*YOLK_G, n:NUTR.yolk }];
-  if (key === 'egg') return [{ k:'egg', name:'Яйцо, взбитое', g:area*0.04, fromDough:true }];
-  if (key === 'yogurt') return [{ k:'yogurt', name:'Греческий йогурт', g:area*0.06, n:ADD.yogurt.n }];
-  if (key === 'soft') return [{ k:'soft', name:'Мягкий творог', g:area*0.06, n:ADD.soft.n }];
+  if (key === 'egg') return [{ k:'egg', name:'Яйцо, взбитое', g:r5(area*0.04), fromDough:true }];
+  if (key === 'yogurt') return [{ k:'yogurt', name:'Греческий йогурт', g:r5(area*0.06), n:ADD.yogurt.n }];
+  if (key === 'soft') return [{ k:'soft', name:'Мягкий творог', g:r5(area*0.06), n:ADD.soft.n }];
   return [];
 }
 
@@ -126,19 +127,26 @@ function compute(s){
   var sugar = PER_KG.sugar*D/Drec, vanilla = PER_KG.vanilla*D/Drec, salt = PER_KG.salt*D/Drec;
   var extras = {};
   Object.keys(EXTRAS).forEach(function(e){ if (s.extras[e]) extras[e] = EXTRAS[e].perKg*k; });
+  /* округление: заметные веса — кратно 5 г; ваши количества, ваниль и соль как есть */
+  function r5(g){ return g >= 7.5 ? Math.round(g/5)*5 : Math.round(g*10)/10; }
+  if (aSrc !== 'user') A = r5(A);
+  if (!lk.length && s.flourTotal == null) comps.forEach(function(c){ flour[c] = r5(flour[c]); });
+  else if (s.flourTotal == null) free.forEach(function(c){ flour[c] = r5(flour[c]); });
+  sugar = r5(sugar);
+  Object.keys(extras).forEach(function(e){ extras[e] = r5(extras[e]); });
   var items = [[T,t.n],[A,add.n],[egg,NUTR.egg],[sugar,NUTR.sugar],[vanilla,NUTR.vanilla],[salt,NUTR.salt]];
   comps.forEach(function(c){ items.push([flour[c], FL[c].n]); });
   Object.keys(extras).forEach(function(e){ items.push([extras[e], EXTRAS[e].n]); });
   var Md = items.reduce(function(a, it){ return a + it[0]; }, 0);
   var tops = topItems(s.top, Md/3.27);
   tops.forEach(function(x){ if (!x.fromDough) items.push([x.g, x.n]); });
-  var M = 0, kc = 0, p = 0, f = 0, cb = 0;
-  items.forEach(function(it){ var g = it[0], n = it[1]; M += g; kc += g*n[0]/100; p += g*n[1]/100; f += g*n[2]/100; cb += g*n[3]/100; });
+  var M = 0, kc = 0, p = 0, f = 0, cb = 0, fb = 0;
+  items.forEach(function(it){ var g = it[0], n = it[1]; M += g; kc += g*n[0]/100; p += g*n[1]/100; f += g*n[2]/100; cb += g*n[3]/100; fb += g*(n[4] || 0)/100; });
   var extraMin = balance < 0.8 ? 10 : balance < 0.92 ? 5 : 0;
   return { T:T, k:k, t:t, add:add, blend:blend, comps:comps, A:A, Arec:Arec, aSrc:aSrc, clamped:clamped, tops:tops, r:r,
     flour:flour, eqNeed:eqNeed, eqHave:eqHave, balance:balance, egg:egg, eggs:eggs, eggExact:eggExact,
-    sugar:sugar, vanilla:vanilla, salt:salt, extras:extras, M:M, Md:Md, tot:[kc, p, f, cb],
-    kbju:[kc/M*100, p/M*100, f/M*100, cb/M*100], time:[t.time[0]+extraMin, t.time[1]+extraMin] };
+    sugar:sugar, vanilla:vanilla, salt:salt, extras:extras, M:M, Md:Md, tot:[kc, p, f, cb, fb],
+    kbju:[kc/M*100, p/M*100, f/M*100, cb/M*100, fb/M*100], time:[t.time[0]+extraMin, t.time[1]+extraMin] };
 }
 function pickForm(M){
   if (M > 3900){ var half = pickForm(M/2); half.two = true; return half; }
@@ -151,7 +159,7 @@ function pickForm(M){
   return { rect:rect, round:roundOk ? round : null, two:false };
 }
 
-var TEMPLATE = "\n  <header>\n    <span class=\"eyebrow\">Завтраки · Выпечка и десерты · калькулятор</span>\n    <h1>Творожная запеканка</h1>\n    <p class=\"lead\">Выберите творог, сколько порций и муку. Если у вас другое количество творога, добавки или муки, впишите своё: остальное пересчитается.</p>\n  </header>\n\n  <div class=\"grid\">\n    <div class=\"panel\">\n      <section class=\"block\" aria-labelledby=\"h-tv\">\n        <h2 id=\"h-tv\">Творог</h2>\n        <div class=\"seg seg-wrap\" id=\"typeSeg\" role=\"group\" aria-label=\"Тип творога\"></div>\n        <div class=\"field\">\n          <label class=\"label\" for=\"weight\">Сколько у вас творога</label>\n          <div class=\"inrow\">\n            <div class=\"num\" id=\"wBox\"><input id=\"weight\" type=\"text\" inputmode=\"decimal\" autocomplete=\"off\"><span>г</span></div>\n          </div>\n          <div class=\"quick\" id=\"quick\"></div>\n          <p class=\"state\" id=\"wState\"></p>\n          <p class=\"err\" id=\"wErr\" hidden>Впишите вес от 100 до 10 000 г.</p>\n        </div>\n      </section>\n\n      <section class=\"block\" aria-labelledby=\"h-n\">\n        <h2 id=\"h-n\">Сколько порций</h2>\n        <div class=\"field\">\n          <span class=\"label\">Порций</span>\n          <div class=\"stepper\"><button type=\"button\" id=\"nMinus\" aria-label=\"Меньше порций\">−</button><output id=\"nOut\"></output><button type=\"button\" id=\"nPlus\" aria-label=\"Больше порций\">+</button></div>\n          <p class=\"state\" id=\"nHint\"></p>\n        </div>\n        <label class=\"check\"><input type=\"checkbox\" id=\"keepTotal\"><span><span>Не менять общий вес</span><small>Тогда при смене числа порций меняется вес одной порции, а продуктов столько же</small></span></label>\n        <div class=\"field\">\n          <label class=\"label\" for=\"portion\">Готовой запеканки на 1 порцию</label>\n          <div class=\"inrow\">\n            <div class=\"num\" id=\"pBox\"><input id=\"portion\" type=\"text\" inputmode=\"decimal\" autocomplete=\"off\"><span>г</span></div>\n            <button type=\"button\" class=\"reset\" id=\"pReset\" hidden>Как в рецепте</button>\n          </div>\n          <p class=\"state\" id=\"pHint\">1 порция — 100 г готовой запеканки.</p>\n        </div>\n      </section>\n\n      <section class=\"block\" aria-labelledby=\"h-add\">\n        <h2 id=\"h-add\">Добавка для нежности</h2>\n        <div class=\"seg\" id=\"kindSeg\" role=\"group\" aria-label=\"Добавка\"></div>\n        <p class=\"hint\" id=\"kindWhy\"></p>\n        <div class=\"field\">\n          <label class=\"label\" for=\"addAmt\">Сколько кладу в тесто</label>\n          <div class=\"inrow\">\n            <div class=\"num\" id=\"addBox\"><input id=\"addAmt\" type=\"text\" inputmode=\"decimal\" autocomplete=\"off\"><span>г</span></div>\n            <button type=\"button\" class=\"reset\" id=\"addReset\" hidden>По рецепту</button>\n          </div>\n          <p class=\"state\" id=\"addState\"></p>\n        </div>\n      </section>\n\n      <section class=\"block\" aria-labelledby=\"h-fl\">\n        <h2 id=\"h-fl\">Мука</h2>\n        <div class=\"blends\" id=\"blends\" role=\"radiogroup\" aria-label=\"Смесь муки\"></div>\n        <div class=\"flourfields\" id=\"flourFields\"></div>\n        <p class=\"hint\">Впишите, сколько у вас есть любой муки или всей муки вместе. Остальная мука и добавка подстроятся. Список смесей зависит от выбранного творога.</p>\n      </section>\n\n      <section class=\"block\" aria-labelledby=\"h-top\">\n        <h2 id=\"h-top\">Верх</h2>\n        <div class=\"blends\" id=\"tops\" role=\"radiogroup\" aria-label=\"Чем смазать верх\"></div>\n      </section>\n\n      <section class=\"block\" aria-labelledby=\"h-ex\">\n        <h2 id=\"h-ex\">Добавки по желанию</h2>\n        <div class=\"checks\" id=\"extras\"></div>\n      </section>\n\n      <div><button type=\"button\" class=\"ghost\" id=\"resetAll\">Вернуть всё к рецепту</button></div>\n    </div>\n\n    <div class=\"result\" aria-live=\"polite\">\n      <div class=\"dish\">\n        <div class=\"dish-head\">\n          <h2>Что положить</h2>\n          <span class=\"pill ok\" id=\"pill\">Тесто в балансе</span>\n        </div>\n        <ul class=\"ing\" id=\"ing\"></ul>\n        <ul class=\"notes\" id=\"notes\"></ul>\n        <dl class=\"facts\" id=\"facts\"></dl>\n        <div>\n          <p class=\"label\">КБЖУ на 100 г теста</p>\n          <div class=\"kbju\" id=\"kbju\"></div>\n          <p class=\"label\" style=\"margin-top:14px\">КБЖУ на 100 г готовой запеканки</p>\n          <div class=\"kbju\" id=\"kbjuReady\"></div>\n          <p class=\"label\" style=\"margin-top:14px\">На 1 порцию</p>\n          <div class=\"kbju\" id=\"kbjuOne\"></div>\n          <p class=\"hint\" id=\"kbjuHint\" style=\"margin-top:8px\"></p>\n        </div>\n      </div>\n      <section class=\"block steps\" aria-labelledby=\"h-st\">\n        <h2 id=\"h-st\">Как готовить</h2>\n        <ol id=\"steps\"></ol>\n      </section>\n    </div>\n  </div>\n\n  <footer><p class=\"hint\">Расчёт по средним табличным данным. Среднее яйцо без скорлупы весит около 50 г, яйца всегда целые.</p></footer>";
+var TEMPLATE = "\n  <header>\n    <span class=\"eyebrow\">Завтраки · Выпечка и десерты · калькулятор</span>\n    <h1>Творожная запеканка</h1>\n    <p class=\"lead\">Выберите творог, сколько порций и муку. Если у вас другое количество творога, добавки или муки, впишите своё: остальное пересчитается.</p>\n  </header>\n\n  <div class=\"grid\">\n    <div class=\"panel\">\n      <section class=\"block\" aria-labelledby=\"h-tv\">\n        <h2 id=\"h-tv\">Творог</h2>\n        <div class=\"seg seg-wrap\" id=\"typeSeg\" role=\"group\" aria-label=\"Тип творога\"></div>\n        <div class=\"field\">\n          <label class=\"label\" for=\"weight\">Сколько у вас творога</label>\n          <div class=\"inrow\">\n            <div class=\"num\" id=\"wBox\"><input id=\"weight\" type=\"text\" inputmode=\"decimal\" autocomplete=\"off\"><span>г</span></div>\n          </div>\n          <div class=\"quick\" id=\"quick\"></div>\n          <p class=\"state\" id=\"wState\"></p>\n          <p class=\"err\" id=\"wErr\" hidden>Впишите вес от 100 до 10 000 г.</p>\n        </div>\n      </section>\n\n      <section class=\"block\" aria-labelledby=\"h-n\">\n        <h2 id=\"h-n\">Сколько порций</h2>\n        <div class=\"field\">\n          <span class=\"label\">Порций</span>\n          <div class=\"stepper\"><button type=\"button\" id=\"nMinus\" aria-label=\"Меньше порций\">−</button><output id=\"nOut\"></output><button type=\"button\" id=\"nPlus\" aria-label=\"Больше порций\">+</button></div>\n          <p class=\"state\" id=\"nHint\"></p>\n        </div>\n        <label class=\"check\"><input type=\"checkbox\" id=\"keepTotal\"><span><span>Не менять общий вес</span><small>Тогда при смене числа порций меняется вес одной порции, а продуктов столько же</small></span></label>\n        <div class=\"field\">\n          <label class=\"label\" for=\"portion\">Готовой запеканки на 1 порцию</label>\n          <div class=\"inrow\">\n            <div class=\"num\" id=\"pBox\"><input id=\"portion\" type=\"text\" inputmode=\"decimal\" autocomplete=\"off\"><span>г</span></div>\n            <button type=\"button\" class=\"reset\" id=\"pReset\" hidden>Как в рецепте</button>\n          </div>\n          <p class=\"state\" id=\"pHint\">1 порция — 100 г готовой запеканки.</p>\n        </div>\n      </section>\n\n      <section class=\"block\" aria-labelledby=\"h-add\">\n        <h2 id=\"h-add\">Добавка для нежности</h2>\n        <div class=\"seg\" id=\"kindSeg\" role=\"group\" aria-label=\"Добавка\"></div>\n        <p class=\"hint\" id=\"kindWhy\"></p>\n        <div class=\"field\">\n          <label class=\"label\" for=\"addAmt\">Сколько кладу в тесто</label>\n          <div class=\"inrow\">\n            <div class=\"num\" id=\"addBox\"><input id=\"addAmt\" type=\"text\" inputmode=\"decimal\" autocomplete=\"off\"><span>г</span></div>\n            <button type=\"button\" class=\"reset\" id=\"addReset\" hidden>По рецепту</button>\n          </div>\n          <p class=\"state\" id=\"addState\"></p>\n        </div>\n      </section>\n\n      <section class=\"block\" aria-labelledby=\"h-fl\">\n        <h2 id=\"h-fl\">Мука</h2>\n        <div class=\"blends\" id=\"blends\" role=\"radiogroup\" aria-label=\"Смесь муки\"></div>\n        <div class=\"flourfields\" id=\"flourFields\"></div>\n        <p class=\"hint\">Впишите, сколько у вас есть любой муки или всей муки вместе. Остальная мука и добавка подстроятся. Список смесей зависит от выбранного творога.</p>\n      </section>\n\n      <section class=\"block\" aria-labelledby=\"h-top\">\n        <h2 id=\"h-top\">Верх</h2>\n        <div class=\"blends\" id=\"tops\" role=\"radiogroup\" aria-label=\"Чем смазать верх\"></div>\n      </section>\n\n      <section class=\"block\" aria-labelledby=\"h-ex\">\n        <h2 id=\"h-ex\">Добавки по желанию</h2>\n        <div class=\"checks\" id=\"extras\"></div>\n      </section>\n\n      <div><button type=\"button\" class=\"ghost\" id=\"resetAll\">Вернуть всё к рецепту</button></div>\n    </div>\n\n    <div class=\"result\" aria-live=\"polite\">\n      <div class=\"dish\">\n        <div class=\"dish-head\">\n          <h2>Что положить</h2>\n          <span class=\"pill ok\" id=\"pill\">Тесто в балансе</span>\n        </div>\n        <ul class=\"ing\" id=\"ing\"></ul>\n        <ul class=\"notes\" id=\"notes\"></ul>\n        <dl class=\"facts\" id=\"facts\"></dl>\n        <div>\n          <p class=\"label\">КБЖУ на 100 г теста</p>\n          <div class=\"kbju\" id=\"kbju\"></div>\n          <p class=\"label\" style=\"margin-top:14px\">КБЖУ на 100 г готовой запеканки</p>\n          <div class=\"kbju\" id=\"kbjuReady\"></div>\n          <p class=\"label\" style=\"margin-top:14px\">На 1 порцию</p>\n          <div class=\"kbju\" id=\"kbjuOne\"></div>\n          <p class=\"kbju-unit\">Белки, жиры, углеводы и клетчатка — в граммах.</p>\n          <p class=\"hint\" id=\"kbjuHint\" style=\"margin-top:8px\"></p>\n        </div>\n      </div>\n      <section class=\"block steps\" aria-labelledby=\"h-st\">\n        <h2 id=\"h-st\">Как готовить</h2>\n        <ol id=\"steps\"></ol>\n      </section>\n    </div>\n  </div>\n\n  <footer><p class=\"hint\">Расчёт по средним табличным данным. Среднее яйцо без скорлупы весит около 50 г, яйца всегда целые.</p></footer>";
 function mount(root){
 root.innerHTML = TEMPLATE;
 
@@ -234,11 +242,21 @@ root.innerHTML = TEMPLATE;
   function P(){ return s.portion || PORTION; }
   function readyPerGram(){ var c1 = compute(Object.assign({}, s, { weight:1000, addLock:null, flourLocks:{}, flourTotal:null })); return c1.M*0.9/1000; }
   function portions(c){ var ready = c.M*0.9, n = (s.keep || s.mode === 'n') && s.N ? s.N : Math.max(1, Math.round(ready/P())); return { n:n, ready:ready, each:ready/n }; }
+  /* вес творога (кратно 5 г), при котором готовой запеканки ближе всего к n × P */
+  function weightFor(n, P0){
+    var rpg = readyPerGram(), want = n*P0, w = Math.round(want/rpg/5)*5, best = w, bestD = 1e9;
+    for (var i = 0; i < 6; i++){
+      var c = compute(Object.assign({}, s, { weight:w, addLock:null, flourLocks:{}, flourTotal:null })), d = want - c.M*0.9;
+      if (Math.abs(d) < bestD){ bestD = Math.abs(d); best = w; }
+      if (Math.abs(d) < 2.5) break;
+      var w2 = Math.round((w + d/rpg)/5)*5; if (w2 === w) w2 = w + (d > 0 ? 5 : -5); w = w2;
+    }
+    return Math.max(100, Math.min(10000, best));
+  }
   function setN(n){
     n = Math.max(1, Math.min(99, n));
     if (s.keep){ s.N = n; changed(); return; }
-    var w = Math.round(n*P()/readyPerGram());
-    if (w < 100 || w > 10000) return;
+    var w = weightFor(n, P());
     s.addLock = null; s.flourLocks = {}; s.flourTotal = null; buildFlourFields();
     s.weight = w; s.mode = 'n'; s.N = n; changed();
   }
@@ -249,11 +267,11 @@ root.innerHTML = TEMPLATE;
     var v = parseNum(pIn.value); if (v == null || v < 40 || v > 400) return;
     if (s.keep){ s.N = Math.max(1, Math.round(compute(s).M*0.9/v)); changed(); return; }
     s.portion = v === PORTION ? null : v;
-    if (s.mode === 'n' && s.N) s.weight = Math.max(100, Math.min(10000, Math.round(s.N*P()/readyPerGram())));
+    if (s.mode === 'n' && s.N) s.weight = weightFor(s.N, P());
     changed();
   });
   pIn.addEventListener('blur', function(){ if (pIn.value.trim() === ''){ s.portion = null; changed(); } else update(); });
-  $('pReset').addEventListener('click', function(){ s.portion = null; if (s.mode === 'n' && s.N) s.weight = Math.round(s.N*P()/readyPerGram()); changed(); });
+  $('pReset').addEventListener('click', function(){ s.portion = null; if (s.mode === 'n' && s.N) s.weight = weightFor(s.N, P()); changed(); });
 
   $('keepTotal').addEventListener('change', function(ev){
     var pr = portions(compute(s));
@@ -326,7 +344,7 @@ root.innerHTML = TEMPLATE;
     lab.querySelector('input').addEventListener('change', function(ev){ s.extras[e] = ev.target.checked; changed(); });
     $('extras').appendChild(lab);
   });
-  $('resetAll').addEventListener('click', function(){ s.addLock = null; s.flourLocks = {}; s.flourTotal = null; s.portion = null; if (s.keep) s.N = null; if (s.mode === 'n' && s.N) s.weight = Math.round(s.N*PORTION/readyPerGram()); buildFlourFields(); changed(); });
+  $('resetAll').addEventListener('click', function(){ s.addLock = null; s.flourLocks = {}; s.flourTotal = null; s.portion = null; if (s.keep) s.N = null; if (s.mode === 'n' && s.N) s.weight = weightFor(s.N, PORTION); buildFlourFields(); changed(); });
 
   function deltaTxt(cur, base){
     var d = cur - base;
@@ -357,7 +375,8 @@ root.innerHTML = TEMPLATE;
     $('nOut').textContent = pr.n;
     $('nHint').textContent = s.keep ? 'Общий вес не меняется, меняется вес порции' : s.mode === 'n' ? 'Творог и остальное подстроились под число порций' : 'Подобрано под ваш творог';
     $('keepTotal').checked = !!s.keep;
-    if (document.activeElement !== pIn) pIn.value = fmt(s.keep ? pr.each : P());
+    if (document.activeElement !== pIn) pIn.value = fmt(pr.each);
+    $('pHint').textContent = '1 порция — около ' + fmt(P()) + ' г готовой запеканки.' + (Math.abs(pr.each - P()) >= 1 ? (s.keep ? ' Общий вес не меняется, поэтому вес порции считается сам.' : s.mode === 'n' ? ' Ближе не выходит: яйца берутся целыми, граммы округлены до 5 г.' : ' Под ваш творог выходит по ' + fmt(pr.each) + ' г: столько порций по ' + fmt(P()) + ' г ровно не делится.') : '');
     $('pBox').classList.toggle('user', !!s.portion && !s.keep);
     $('pReset').hidden = !s.portion || !!s.keep;
     $('tops').querySelectorAll('.blend').forEach(function(l){ var on = l.dataset.top === s.top; l.classList.toggle('on', on); l.querySelector('input').checked = on; });
@@ -409,14 +428,15 @@ root.innerHTML = TEMPLATE;
     html += row(c.add.name, fmt(c.A) + ' г', aSub.join(' · '));
     var eSub = ['среднее яйцо ≈ 50 г без скорлупы']; if (c.eggs !== base.eggs) eSub.push('к рецепту ' + (c.eggs > base.eggs ? '+' : '−') + Math.abs(c.eggs - base.eggs));
     html += row('Яйца', c.eggs + ' ' + eggWord(c.eggs) + ' · ' + fmt(c.egg) + ' г', eSub.join(' · '));
-    html += row('Сахар', fmt(c.sugar) + ' г', deltaTxt(c.sugar, base.sugar));
+    var vsG = Math.max(5, Math.round(10*c.k/5)*5);
+    html += row('Сахар', fmt(c.sugar) + ' г', [deltaTxt(c.sugar, base.sugar), 'из них ' + fmt(vsG) + ' г можно заменить ванильным сахаром'].filter(Boolean).join(' · '));
     comps.forEach(function(k){
       var sub = []; if (c.blend.rec) sub.push('<span class="chip">рекомендую</span>');
       if (s.flourLocks[k] != null) sub.push('ваше количество');
       var d = deltaTxt(c.flour[k], base.flour[k]); if (d) sub.push(d);
       html += row(FL[k].name, fmt(c.flour[k]) + ' г', sub.join(' · '));
     });
-    html += row('Ванильный экстракт', fmt(c.vanilla) + ' г', '');
+    html += row('Ванильный экстракт', fmt(c.vanilla) + ' г', 'или ванилин на кончике ножа · только если не брали ванильный сахар');
     html += row('Соль', fmt(c.salt) + ' г', '');
     Object.keys(c.extras).forEach(function(e){ html += row(EXTRAS[e].name, fmt(c.extras[e]) + ' г', EXTRAS[e].note || ''); });
     if (c.tops.length){
@@ -475,16 +495,17 @@ root.innerHTML = TEMPLATE;
     var fm = pickForm(c.Md);
     var formTxt = (fm.two ? 'Две формы, каждая ' : '') + fm.rect[0] + '×' + fm.rect[1] + ' см' + (fm.round ? ' или круглая Ø ' + fm.round + ' см' : '') + ', слой около 4 см';
     $('facts').innerHTML =
-      '<dt>Выход</dt><dd>' + pr.n + ' ' + plural(pr.n, PW) + ' по ' + fmt(pr.each) + ' г, всего ' + fmt(pr.ready) + ' г готовой запеканки</dd>' +
+      '<dt>Выход</dt><dd>' + pr.n + ' ' + plural(pr.n, PW) + ' по ' + fmt(pr.each) + '&nbsp;г, всего ' + fmt(pr.ready) + '&nbsp;г готовой запеканки</dd>' +
       '<dt>Духовка</dt><dd>170°C верх-низ или 155–160°C с конвекцией</dd>' +
       '<dt>Время</dt><dd>' + tm + ', потом 15 мин в выключенной духовке</dd>' +
       '<dt>Форма</dt><dd>' + formTxt + '</dd>';
 
     function kbjuHtml(kb){
       return '<div><b>' + Math.round(kb[0]) + '</b><span>ккал</span></div>' +
-        '<div><b>' + kb[1].toFixed(1).replace('.', ',') + '</b><span>белки, г</span></div>' +
-        '<div><b>' + kb[2].toFixed(1).replace('.', ',') + '</b><span>жиры, г</span></div>' +
-        '<div><b>' + kb[3].toFixed(1).replace('.', ',') + '</b><span>углеводы, г</span></div>';
+        '<div><b>' + kb[1].toFixed(1).replace('.', ',') + '</b><span>белки</span></div>' +
+        '<div><b>' + kb[2].toFixed(1).replace('.', ',') + '</b><span>жиры</span></div>' +
+        '<div><b>' + kb[3].toFixed(1).replace('.', ',') + '</b><span>углеводы</span></div>' +
+        '<div><b>' + kb[4].toFixed(1).replace('.', ',') + '</b><span>клетчатка</span></div>';
     }
     $('kbju').innerHTML = kbjuHtml(c.kbju);
     $('kbjuReady').innerHTML = kbjuHtml(c.kbju.map(function(v){ return v/0.9; }));

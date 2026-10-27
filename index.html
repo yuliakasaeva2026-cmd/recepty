@@ -120,10 +120,11 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--cobalt);outline
 .facts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;margin:0}
 .facts dt{color:var(--muted);font-size:13px;padding-top:1px}
 .facts dd{margin:0;min-width:0}
-.kbju{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:6px}
-.kbju div{background:var(--sunk);border-radius:10px;padding:8px 6px;text-align:center;min-width:0}
-.kbju b{display:block;font-family:var(--f-num);font-weight:500;font-size:19px;font-variant-numeric:tabular-nums}
-.kbju span{font-size:12px;color:var(--muted)}
+.kbju{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-top:6px}
+.kbju div{background:var(--sunk);border-radius:10px;padding:8px 1px;text-align:center;min-width:0}
+.kbju b{display:block;font-family:var(--f-num);font-weight:500;font-size:16px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.kbju span{display:block;font-size:10.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kbju-unit{font-size:12px;color:var(--muted);margin:4px 0 0}
 .steps ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:9px}
 .steps li{padding-left:4px}
 .steps li::marker{font-family:var(--f-num);color:var(--cobalt)}
@@ -425,8 +426,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     return fmtNum(Math.round(v * 10) / 10) + (u ? ' ' + esc(u) : '');
   }
   function kbjuCells(k){
-    return '<div><b>' + Math.round(k[0]) + '</b><span>ккал</span></div><div><b>' + fmtNum(Math.round(k[1] * 10) / 10) + '</b><span>белки, г</span></div>' +
-      '<div><b>' + fmtNum(Math.round(k[2] * 10) / 10) + '</b><span>жиры, г</span></div><div><b>' + fmtNum(Math.round(k[3] * 10) / 10) + '</b><span>углеводы, г</span></div>';
+    return '<div><b>' + Math.round(k[0]) + '</b><span>ккал</span></div><div><b>' + fmtNum(Math.round(k[1] * 10) / 10) + '</b><span>белки</span></div>' +
+      '<div><b>' + fmtNum(Math.round(k[2] * 10) / 10) + '</b><span>жиры</span></div><div><b>' + fmtNum(Math.round(k[3] * 10) / 10) + '</b><span>углеводы</span></div>' +
+      '<div><b>' + fmtNum(Math.round((k[4] || 0) * 10) / 10) + '</b><span>клетчатка</span></div>';
   }
   function simple(r){
     var key = 'book-scale-' + r.id;

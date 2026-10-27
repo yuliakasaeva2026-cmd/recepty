@@ -7,6 +7,8 @@ function plural(n, w){ n = Math.abs(Math.round(n)); var a = n % 10, b = n % 100;
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]; }); }
 function parseNum(v){ var x = parseFloat(String(v || '').replace(/\s/g, '').replace(',', '.')); return isNaN(x) || x < 0 ? null : x; }
 var FR = { 0.5:'½' };
+/* заметные веса — кратно 5 г, мелочи — до грамма */
+function r5(g){ return g >= 7.5 ? Math.round(g / 5) * 5 : Math.round(g); }
 function halves(v){ var r = Math.round(v * 2) / 2, w = Math.floor(r), p = r - w; return p ? (w ? w : '') + '½' : String(w); }
 
 /* ===================== РАСЧЁТ ===================== */
@@ -94,7 +96,22 @@ function compute(C, st){
       items.forEach(function(i){ sh[i.id] = i.id === us.id ? v : (b0 < 1 ? sh[i.id] * (1 - v) / (1 - b0) : 0); });
       if (b0 > 0 && Math.abs(v - b0) / b0 > 0.1) dev = true;
     }
-    parts[pid] = { per:per, basis:basis, sh:sh, items:items, user:us, dev:dev };
+    /* граммы на всё количество: общий вес и заметные части кратно 5 г, сумма частей = общему весу */
+    var Nn = mp.N, T = r5(per * Nn), amt = {}, fixedSum = 0, big = [];
+    items.forEach(function(i){
+      var ex = per * sh[i.id] * Nn;
+      if (us && us.id === i.id){ amt[i.id] = us.share * per * Nn; fixedSum += amt[i.id]; }
+      else if (ex < 7.5){ amt[i.id] = Math.round(ex); fixedSum += amt[i.id]; }
+      else big.push({ id:i.id, ex:ex });
+    });
+    if (big.length){
+      var units = Math.max(0, Math.round((T - fixedSum) / 5)), exSum = big.reduce(function(a, b){ return a + b.ex; }, 0), used = 0;
+      big.forEach(function(b){ b.q = exSum ? units * b.ex / exSum : 0; b.u = Math.floor(b.q); used += b.u; });
+      big.slice().sort(function(a, b){ return (b.q - b.u) - (a.q - a.u); }).slice(0, units - used).forEach(function(b){ b.u++; });
+      big.forEach(function(b){ amt[b.id] = b.u * 5; });
+    }
+    T = items.reduce(function(a, i){ return a + amt[i.id]; }, 0);
+    parts[pid] = { per:T / Nn, basis:basis, sh:sh, amt:amt, items:items, user:us, dev:dev };
   });
   /* количества */
   var A = {}, round = [];
@@ -106,12 +123,13 @@ function compute(C, st){
         mine = (i.main === C.main.mix.first ? mp.Lf : mp.Ls) != null;
         if (mine) a = i.main === C.main.mix.first ? mp.Lf : mp.Ls;
       }
-      else if (i.part) a = parts[i.part].per * parts[i.part].sh[i.id] * N;
+      else if (i.part) a = parts[i.part].amt[i.id];
       else if (i.with) a = i.g * parts[i.with].per / C.parts[i.with].def * N;
       else if (i.perPiece) a = i.g * N;
       else if (!i.perUnit) a = i.g * mp.f * N;
     }
     if (mine && !mp) a = lockG;
+    if (!mine && !i.part && !(i.spice && a < 10) && !i.pinch && !i.noMass && !i.piece && !i.exact && !i.perUnit && !i.with) a = r5(a);
     var cnt = null, byWeight = i.piece && i.piece.loose && st.loose[i.id];
     if (i.piece && (mine || byWeight)) cnt = a / i.piece.g;
     else if (i.piece){
@@ -121,13 +139,13 @@ function compute(C, st){
     A[i.id] = { g:a, cnt:cnt, mine:mine, byWeight:!!byWeight };
   });
   /* итоги */
-  var raw = 0, ready = 0, perMass = 0, tot = [0, 0, 0, 0];
+  var raw = 0, ready = 0, perMass = 0, tot = [0, 0, 0, 0, 0];
   list.forEach(function(i){
     if (i.noMass) return;
     var a = A[i.id].g, r = a * (1 - lossOf(C, i));
     raw += a; ready += r;
     if (!i.perUnit) perMass += por && por.of === 'raw' ? a : r;
-    var nn = nutOf(i, st); if (nn) for (var k = 0; k < 4; k++) tot[k] += a * nn[k] / 100;
+    var nn = nutOf(i, st); if (nn) for (var k = 0; k < 5; k++) tot[k] += a * (nn[k] || 0) / 100;
   });
   /* статус */
   var fresh = (C.options || []).some(function(o){ var c = choiceOf(C, st, o.id); return c && c.fresh && optRelevant(C, o, st); }) ||
@@ -313,8 +331,8 @@ function mount(root, rec){
   $('cResetAll').addEventListener('click', function(){ st.lock = null; st.portion = null; st.N = null; st.fixS = null; st.mainPer = null; st.mlock = {}; st.ptot = {}; st.pshare = {}; st.split = null; changed(); });
 
   function kbju(k){
-    return '<div class="kbju"><div><b>' + Math.round(k[0]) + '</b><span>ккал</span></div><div><b>' + fmt1(k[1]) + '</b><span>белки, г</span></div>' +
-      '<div><b>' + fmt1(k[2]) + '</b><span>жиры, г</span></div><div><b>' + fmt1(k[3]) + '</b><span>углеводы, г</span></div></div>';
+    return '<div class="kbju"><div><b>' + Math.round(k[0]) + '</b><span>ккал</span></div><div><b>' + fmt1(k[1]) + '</b><span>белки</span></div>' +
+      '<div><b>' + fmt1(k[2]) + '</b><span>жиры</span></div><div><b>' + fmt1(k[3]) + '</b><span>углеводы</span></div><div><b>' + fmt1(k[4] || 0) + '</b><span>клетчатка</span></div></div>';
   }
   function row(name, qty, sub){ return '<li><span class="ing-n">' + name + '</span><span class="ing-q">' + qty + '</span>' + (sub ? '<span class="ing-s">' + sub + '</span>' : '') + '</li>'; }
   function qtyOf(i, a){
@@ -337,11 +355,12 @@ function mount(root, rec){
     $('cNHint').textContent = r.lockG != null ? 'Подобрано под ваше количество' : (C.countHint || '');
     if (C.portion){
       $('cKeep').checked = !!st.keep;
-      var pIn = $('cP'); if (document.activeElement !== pIn) pIn.value = fmt(r.lockG != null || r.kept ? r.Pact : (st.portion || C.portion.def));
+      var pIn = $('cP'); if (document.activeElement !== pIn) pIn.value = fmt(r.Pact);
       $('cP-box').classList.toggle('user', !!st.portion && r.lockG == null && !r.kept);
       $('cP-reset').hidden = !st.portion || r.lockG != null || !!st.keep;
       $('cPHint').textContent = C.portion.hint + (r.kept ? ' Общий вес не меняется, поэтому вес порции считается сам.' :
-        r.lockG == null && Math.abs(r.Pact - r.P) >= 1 && C.portion.why ? ' Сейчас выходит по ' + fmt(r.Pact) + ' г: ' + C.portion.why + '.' : '');
+        r.lockG != null ? ' Под ваше количество выходит столько.' :
+        Math.abs(r.Pact - r.P) >= 1 ? (!st.N && !st.portion ? ' Так выходит по вашему рецепту.' : C.portion.why ? ' Ближе к ' + fmt(r.P) + ' г не выходит: ' + C.portion.why + '.' : '') : '');
     }
     (C.locks || []).forEach(function(l){
       var it = r.list.filter(function(i){ return (i.lock || i.id) === l.id; })[0], user = st.lock && st.lock.id === l.id;
@@ -366,7 +385,7 @@ function mount(root, rec){
       $('cPT-' + pid + '-state').textContent = Math.abs(pt.basis - PD.def) < 0.5 ? 'По рецепту: ' + PD.def + ' г на ' + C.main.def + ' г ' + C.main.gen + (Math.abs(r.mp.f - 1) > 0.01 ? ', у вас ' + fmt(r.mp.mAct) + ' г' : '') : 'Ваше количество';
       document.querySelectorAll('#cPF-' + pid + ' .field').forEach(function(fd){
         var id = fd.dataset.id, on = pt.items.some(function(i){ return i.id === id; }); fd.hidden = !on;
-        if (on) paintField('cPI-' + id, pt.per * pt.sh[id], pt.user && pt.user.id === id, pt.user ? (pt.user.id === id ? 'Ваше количество' : 'Подстроилось') : 'По рецепту');
+        if (on) paintField('cPI-' + id, pt.amt[id] / r.N, pt.user && pt.user.id === id, pt.user ? (pt.user.id === id ? 'Ваше количество' : 'Подстроилось') : 'По рецепту');
       });
     });
     document.querySelectorAll('#cOpts > .block[data-oid]').forEach(function(sec){
@@ -413,7 +432,9 @@ function mount(root, rec){
       if (i.spice) sub.push('рекомендую'); else if (!i.free) sub.push(ok);
       if (a.mine) sub.push('ваше количество');
       if (i.perUnit) sub.push(fmt(i.perUnit) + ' г на ' + U[0].replace(/а$/, 'у').replace(/я$/, 'ю'));
-      if (i.range) sub.push('по вкусу ' + fmt(i.range[0] * r.s) + '–' + fmt(i.range[1] * r.s) + ' г');
+      if (i.ml) sub.push('≈ ' + fmt(r5(a.g / i.ml)) + ' мл');
+      if (i.range) sub.push('по вкусу ' + fmt(r5(i.range[0] * r.s)) + '–' + fmt(r5(i.range[1] * r.s)) + ' г');
+      if (i.vs) sub.push('из них ' + fmt(Math.max(5, r5(i.vs * r.s))) + ' г можно заменить ванильным сахаром');
       if (i.note) sub.push(esc(i.note));
       h += row(esc(nameOf(i, st)), qtyOf(i, a), sub.filter(Boolean).join(' · '));
     });
@@ -440,7 +461,7 @@ function mount(root, rec){
     $('cNotes').innerHTML = notes.map(function(n){ return '<li' + (n[0] ? ' class="' + n[0] + '"' : '') + '>' + n[1] + '</li>'; }).join('');
     /* факты */
     var out = r.por
-      ? r.N + ' ' + plural(r.N, U) + ' по ' + fmt(r.Pact) + ' г ' + C.portion.what + ', всего ' + fmt(r.perMass) + ' г'
+      ? r.N + ' ' + plural(r.N, U) + ' по ' + fmt(r.Pact) + '&nbsp;г ' + C.portion.what + ', всего ' + fmt(r.perMass) + '&nbsp;г'
       : r.N + ' ' + plural(r.N, U) + ', каждая ≈ ' + fmt(r.Pact) + ' г';
     $('cFacts').innerHTML = '<dt>Выход</dt><dd>' + out + '</dd>' + (C.facts || []).map(function(f){ return '<dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd>'; }).join('');
     /* КБЖУ */
@@ -450,6 +471,7 @@ function mount(root, rec){
       kh += '<p class="label" style="margin-top:14px">На 100 г ' + esc(C.readyWord || 'готового блюда') + '</p>' + kbju(r.k100);
     } else kh += '<p class="label">КБЖУ на 100 г</p>' + kbju(r.k100);
     kh += '<p class="label" style="margin-top:14px">На 1 ' + esc(U[0].replace(/а$/, 'у').replace(/я$/, 'ю')) + '</p>' + kbju(r.kOne);
+    kh += '<p class="kbju-unit">Белки, жиры, углеводы и клетчатка — в граммах.</p>';
     if (r.lossy) kh += '<p class="hint" style="margin-top:8px">При приготовлении уходит около ' + Math.round((1 - r.ready / r.raw) * 100) + '% влаги: из ' + fmt(r.raw) + ' г выйдет примерно ' + fmt(r.ready) + ' г. Поэтому в 100 г готового калорий и БЖУ больше.</p>';
     $('cKbju').innerHTML = kh;
     /* шаги */

@@ -39,13 +39,13 @@
 */
 /* КБЖУ на 100 г: ккал, белки, жиры, углеводы */
 var NUT = {
-  chickenBreast:[113, 23.6, 1.9, 0.4], chickenThigh:[150, 18.5, 8.5, 0], tomato:[20, 0.6, 0.2, 4.2], cucumber:[14, 0.8, 0.1, 2.5],
-  redOnion:[42, 1.4, 0, 9.1], onion:[41, 1.4, 0, 8.2], jalapeno:[29, 0.9, 0.4, 6.5], mayo30:[300, 0.5, 30, 7], kefir25:[53, 2.9, 2.5, 4],
-  yogurt2:[66, 8, 2, 4], garlic:[149, 6.4, 0.5, 33], tahini:[595, 17, 53, 21], lemonJuice:[22, 0.4, 0.2, 6.9], sriracha:[93, 1.9, 0.9, 19],
-  lavash:[250, 8, 1, 51], cream33:[322, 2.2, 33, 3], cream20:[205, 2.8, 20, 3.7], milk32:[59, 2.9, 3.2, 4.7], yolk:[352, 16.2, 31.2, 1],
-  sugar:[399, 0, 0, 99.8], starch:[381, 0.3, 0.1, 91], gelatin:[355, 87.2, 0.4, 0.7], vanilla:[288, 0.1, 0.1, 12.7],
-  tuna:[96, 21, 1, 0], anchovy:[210, 29, 10, 0], capers:[23, 2.4, 0.9, 4.9], mince75:[144, 19, 7.5, 0], tomatoCrushed:[24, 1.1, 0.2, 4],
-  mayo67:[627, 0.3, 67, 2.6], parmesan:[392, 35.8, 25.8, 3.2], dijon:[151, 7.4, 11, 3.5], worcester:[78, 0, 0, 19.5], butter:[748, 0.6, 82.5, 0.8], soft5:[100, 9, 5, 3.5], oliveOil:[898, 0, 99.8, 0], yolkBoiled:[322, 15.9, 26.5, 3.6], broth:[15, 2, 0.5, 0.3], wheat:[334, 10.3, 1.1, 68.9], sheets:[350, 12, 1.5, 70], cheese16:[264, 30, 16, 0], cheese45:[335, 25, 26, 0]
+  chickenBreast:[113, 23.6, 1.9, 0.4, 0], chickenThigh:[150, 18.5, 8.5, 0, 0], tomato:[20, 0.6, 0.2, 4.2, 1.2], cucumber:[14, 0.8, 0.1, 2.5, 0.5],
+  redOnion:[42, 1.4, 0, 9.1, 1.7], onion:[41, 1.4, 0, 8.2, 1.7], jalapeno:[29, 0.9, 0.4, 6.5, 2.8], mayo30:[300, 0.5, 30, 7, 0], kefir25:[53, 2.9, 2.5, 4, 0],
+  yogurt2:[66, 8, 2, 4, 0], garlic:[149, 6.4, 0.5, 33, 2.1], tahini:[595, 17, 53, 21, 9.3], lemonJuice:[22, 0.4, 0.2, 6.9, 0.3], sriracha:[93, 1.9, 0.9, 19, 0.8],
+  lavash:[250, 8, 1, 51, 2], cream33:[322, 2.2, 33, 3, 0], cream20:[205, 2.8, 20, 3.7, 0], milk32:[59, 2.9, 3.2, 4.7, 0], yolk:[352, 16.2, 31.2, 1, 0],
+  sugar:[399, 0, 0, 99.8, 0], starch:[381, 0.3, 0.1, 91, 0.9], gelatin:[355, 87.2, 0.4, 0.7, 0], vanilla:[288, 0.1, 0.1, 12.7, 0],
+  tuna:[96, 21, 1, 0, 0], anchovy:[210, 29, 10, 0, 0], capers:[23, 2.4, 0.9, 4.9, 3.2], mince75:[144, 19, 7.5, 0, 0], tomatoCrushed:[24, 1.1, 0.2, 4, 1.5],
+  mayo67:[627, 0.3, 67, 2.6, 0], parmesan:[392, 35.8, 25.8, 3.2, 0], dijon:[151, 7.4, 11, 3.5, 3], worcester:[78, 0, 0, 19.5, 0], butter:[748, 0.6, 82.5, 0.8, 0], soft5:[100, 9, 5, 3.5, 0], oliveOil:[898, 0, 99.8, 0, 0], yolkBoiled:[322, 15.9, 26.5, 3.6, 0], broth:[15, 2, 0.5, 0.3, 0], wheat:[334, 10.3, 1.1, 68.9, 3.5], sheets:[350, 12, 1.5, 70, 3.2], cheese16:[264, 30, 16, 0, 0], cheese45:[335, 25, 26, 0, 0]
 };
 var MAYO = { opt:'mayo', light:{ name:'Майонез лёгкий 30%', n:NUT.mayo30 }, classic:{ name:'Майонез классический 67%', n:NUT.mayo67 } };
 var YOLK = { g:17, words:['желток', 'желтка', 'желтков'], title:'Желтки', why:'желтки берутся целыми',
@@ -207,7 +207,7 @@ window.BOOK = {
           { id: 'pepper',  name: 'Перец', g: 1, spice: true, mix: 'Специи для болоньезе' },
           { id: 'salt',    name: 'Соль', g: 8, spice: true },
           { group: 'Соус бешамель' },
-          { id: 'milk',    name: 'Молоко 3,2%', g: 670, n: NUT.milk32, note: '650 мл' },
+          { id: 'milk',    name: 'Молоко 3,2%', g: 670, n: NUT.milk32, ml: 1.03 },
           { id: 'flour',   name: 'Мука пшеничная', g: 65, n: NUT.wheat },
           { id: 'butter',  name: 'Сливочное масло 82,5%', g: 65, n: NUT.butter },
           { id: 'nutmeg',  name: 'Мускатный орех', g: 0.5, mix: 'Специи' },
@@ -247,8 +247,8 @@ window.BOOK = {
           { group: 'Крем' },
           { id: 'cream',   name: 'Сливки 33–35%', g: 500, n: NUT.cream33, note: '1 мл ≈ 1 г' },
           { id: 'yolk',    name: 'Желтки', g: 68, n: NUT.yolk, piece: YOLK, anchor: true },
-          { id: 'sugar',   name: 'Сахар', g: 55, n: NUT.sugar, range: [50, 60] },
-          { id: 'vanilla', name: 'Ванильный экстракт', g: 3, n: NUT.vanilla, spice: true, note: 'или семена ½ стручка ванили' },
+          { id: 'sugar',   name: 'Сахар', g: 55, n: NUT.sugar, range: [50, 60], vs: 10 },
+          { id: 'vanilla', name: 'Ванильный экстракт', g: 3, n: NUT.vanilla, spice: true, note: 'или семена ½ стручка ванили · только если не брали ванильный сахар' },
           { group: 'Для корочки' },
           { id: 'sugarTop', name: 'Сахар белый', perUnit: 5, n: NUT.sugar, loss: 0, note: 'коричневый горит' }
         ],
@@ -277,7 +277,7 @@ window.BOOK = {
         locks: [{ id: 'milk', label: 'Сколько у вас молока', gen: 'молока' }],
         ing: [
           { group: 'Крем' },
-          { id: 'milk',   name: 'Молоко 3,2%', g: 515, n: NUT.milk32, note: '500 мл' },
+          { id: 'milk',   name: 'Молоко 3,2%', g: 515, n: NUT.milk32, ml: 1.03 },
           { id: 'yolk',   name: 'Желтки', g: 68, n: NUT.yolk, piece: YOLK, anchor: true },
           { id: 'sugar',  name: 'Сахар', g: 55, n: NUT.sugar, range: [50, 60] },
           { id: 'starch', name: 'Кукурузный крахмал', g: 20, n: NUT.starch },
@@ -313,10 +313,10 @@ window.BOOK = {
         portion: { def: 110, min: 100, max: 150, of: 'raw', label: 'Панакоты в 1 формочку', hint: 'Хотелось бы по 100–120 г, максимум 150.', word: 'по 100–120 г, максимум 150', what: 'панакоты' },
         locks: [{ id: 'cream', label: 'Сколько у вас сливок', gen: 'сливок' }],
         ing: [
-          { id: 'cream',   name: 'Сливки 20%', g: 505, n: NUT.cream20, note: '500 мл' },
-          { id: 'sugar',   name: 'Сахар', g: 55, n: NUT.sugar, range: [50, 60] },
-          { id: 'gelatin', name: 'Желатин листовой', g: 10, n: NUT.gelatin, approx: { g: 2, words: ['лист', 'листа', 'листов'] } },
-          { id: 'vanilla', name: 'Ванильный экстракт', g: 3, n: NUT.vanilla, spice: true, note: 'или семена ½ стручка ванили' }
+          { id: 'cream',   name: 'Сливки 20%', g: 505, n: NUT.cream20, ml: 1.01 },
+          { id: 'sugar',   name: 'Сахар', g: 55, n: NUT.sugar, range: [50, 60], vs: 10 },
+          { id: 'gelatin', name: 'Желатин листовой', g: 10, n: NUT.gelatin, exact: true, approx: { g: 2, words: ['лист', 'листа', 'листов'] } },
+          { id: 'vanilla', name: 'Ванильный экстракт', g: 3, n: NUT.vanilla, spice: true, note: 'или семена ½ стручка ванили · только если не брали ванильный сахар' }
         ],
         orig: 'сливки 20% 500 мл, сахар 50–60 г, листовой желатин 10 г.',
         facts: [['Плита', 'до 85–90 °C, не кипятить'], ['Застывание', '3–4 ч в холодильнике']],

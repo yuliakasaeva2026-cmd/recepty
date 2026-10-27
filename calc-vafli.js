@@ -1,47 +1,47 @@
 /* Вафли для Breville VST072X: конструктор. Подключается в книгу как модуль vafli. */
 (function(){
 /* ===================== ДАННЫЕ ===================== */
-var EGG_G = 50, EGG_WET = 0.75, EGG_N = [157, 12.7, 11.5, 0.7];
+var EGG_G = 50, EGG_WET = 0.75, EGG_N = [157, 12.7, 11.5, 0.7, 0];
 var STARCH_SHARE = 0.2, CHOP = 2.4; /* мелко нарезанное яблоко весит в 2,4 раза больше тёртого отжатого */
 var BUTTER_PER_WAFFLE = 5;          /* сливочное масло: 10 г на каждые 2 вафли */
 
 /* wet — сколько жидкости даёт основа; need — насколько тесту с ней нужно яйцо (1 = как кефир) */
 var BASES = {
-  kefir:  { name:'Кефир 2%',            gen:'кефира',          wet:0.88, need:1.0,  n:[51, 3.4, 2, 4.7] },
-  yogurt: { name:'Греческий йогурт 2%', gen:'йогурта',         wet:0.65, need:0.9,  n:[66, 8, 2, 4] },
-  soft:   { name:'Мягкий творог 5%',    gen:'мягкого творога', wet:0.55, need:0.85, n:[100, 9, 5, 3.5] },
-  milk:   { name:'Молоко',              gen:'молока',          wet:0.9,  need:1.05, n:[52, 2.8, 2.5, 4.7] },
-  none:   { name:'Без жидкой основы',   gen:'',                wet:0,    need:1.0,  n:[0, 0, 0, 0] }
+  kefir:  { name:'Кефир 2,5%',          gen:'кефира',          wet:0.88, need:1.0,  n:[53, 2.9, 2.5, 4, 0] },
+  yogurt: { name:'Греческий йогурт 2%', gen:'йогурта',         wet:0.65, need:0.9,  n:[66, 8, 2, 4, 0] },
+  soft:   { name:'Мягкий творог 5%',    gen:'мягкого творога', wet:0.55, need:0.85, n:[100, 9, 5, 3.5, 0] },
+  milk:   { name:'Молоко',              gen:'молока',          wet:0.9,  need:1.05, n:[52, 2.8, 2.5, 4.7, 0] },
+  none:   { name:'Без жидкой основы',   gen:'',                wet:0,    need:1.0,  n:[0, 0, 0, 0, 0] }
 };
 /* c — впитывающая сила (пшеничная = 1); need — потребность в яйце для связки (пшеничная = 1) */
 var FLOURS = {
-  wheat:  { name:'Пшеничная',              c:1,    need:1,    n:[334, 10.3, 1.1, 68.9] },
-  oat:    { name:'Овсяная',                c:1,    need:1.15, n:[369, 13, 6.8, 64.9] },
-  rice:   { name:'Рисовая',                c:1,    need:1.2,  n:[366, 6, 1.4, 80.2] },
-  ricew:  { name:'Рисовая цельнозерновая', c:1.05, need:1.2,  n:[360, 7.5, 2.7, 76] },
-  buck:   { name:'Гречневая (зелёная)',    c:1.05, need:1.1,  n:[335, 12.6, 3.3, 62] },
-  chick:  { name:'Нутовая',                c:1.15, need:0.95, n:[387, 22.4, 6.7, 57.8] },
-  corn:   { name:'Кукурузная',             c:1,    need:1.2,  n:[331, 7.2, 1.5, 72.1] },
-  coco:   { name:'Кокосовая',              c:1.6,  need:1.25, n:[340, 20, 13, 21] },
-  alm:    { name:'Миндальная',             c:0.67, need:1.3,  n:[610, 24, 52, 13] },
-  starch: { name:'Кукурузный крахмал',     c:0.9,  need:1.1,  n:[381, 0.3, 0.1, 91] }
+  wheat:  { name:'Пшеничная',              c:1,    need:1,    n:[334, 10.3, 1.1, 68.9, 3.5] },
+  oat:    { name:'Овсяная',                c:1,    need:1.15, n:[369, 13, 6.8, 64.9, 10] },
+  rice:   { name:'Рисовая',                c:1,    need:1.2,  n:[366, 6, 1.4, 80.2, 2.4] },
+  ricew:  { name:'Рисовая цельнозерновая', c:1.05, need:1.2,  n:[360, 7.5, 2.7, 76, 4.6] },
+  buck:   { name:'Гречневая (зелёная)',    c:1.05, need:1.1,  n:[335, 12.6, 3.3, 62, 10] },
+  chick:  { name:'Нутовая',                c:1.15, need:0.95, n:[387, 22.4, 6.7, 57.8, 10.8] },
+  corn:   { name:'Кукурузная',             c:1,    need:1.2,  n:[331, 7.2, 1.5, 72.1, 7.3] },
+  coco:   { name:'Кокосовая',              c:1.6,  need:1.25, n:[340, 20, 13, 21, 39] },
+  alm:    { name:'Миндальная',             c:0.67, need:1.3,  n:[610, 24, 52, 13, 10] },
+  starch: { name:'Кукурузный крахмал',     c:0.9,  need:1.1,  n:[381, 0.3, 0.1, 91, 0.9] }
 };
 var ITEMS = {
-  sugar:   { name:'Сахар',                     wet:0,    n:[399, 0, 0, 99.8] },
-  cocoa:   { name:'Какао-порошок',             wet:0,    n:[289, 24.2, 15, 10.2] },
-  dry5:    { name:'Творог сухой 5%',           wet:0.45, n:[121, 17.2, 5, 1.8] },
-  brick5:  { name:'Творог в брикетах 5%',      wet:0.5,  n:[121, 17, 5, 1.8] },
-  plast5:  { name:'Творог пластовой 5%',       wet:0.58, n:[121, 17, 5, 1.8] },
-  plast9:  { name:'Творог пластовой 9%',       wet:0.55, n:[159, 16, 9, 3] },
-  apple:   { name:'Яблоко',                    wet:0.6,  n:[47, 0.4, 0.4, 9.8] },
-  potato:  { name:'Картофель тёртый, отжатый', wet:0.55, n:[77, 2, 0.4, 16.3] },
-  chicken: { name:'Куриное филе',              wet:0.5,  n:[113, 23.6, 1.9, 0.4] },
-  cheese:  { name:'Сыр твёрдый',               wet:0.2,  n:[360, 26, 28, 0] },
-  butter:  { name:'Сливочное масло 82,5%',     wet:0,    n:[748, 0.6, 82.5, 0.8] }
+  sugar:   { name:'Сахар',                     wet:0,    n:[399, 0, 0, 99.8, 0] },
+  cocoa:   { name:'Какао-порошок',             wet:0,    n:[289, 24.2, 15, 10.2, 35] },
+  dry5:    { name:'Творог сухой 5%',           wet:0.45, n:[121, 17.2, 5, 1.8, 0] },
+  brick5:  { name:'Творог в брикетах 5%',      wet:0.5,  n:[121, 17, 5, 1.8, 0] },
+  plast5:  { name:'Творог пластовой 5%',       wet:0.58, n:[121, 17, 5, 1.8, 0] },
+  plast9:  { name:'Творог пластовой 9%',       wet:0.55, n:[159, 16, 9, 3, 0] },
+  apple:   { name:'Яблоко',                    wet:0.6,  n:[47, 0.4, 0.4, 9.8, 1.8] },
+  potato:  { name:'Картофель тёртый, отжатый', wet:0.55, n:[77, 2, 0.4, 16.3, 1.4] },
+  chicken: { name:'Куриное филе',              wet:0.5,  n:[113, 23.6, 1.9, 0.4, 0] },
+  cheese:  { name:'Сыр твёрдый',               wet:0.2,  n:[360, 26, 28, 0, 0] },
+  butter:  { name:'Сливочное масло 82,5%',     wet:0,    n:[748, 0.6, 82.5, 0.8, 0] }
 };
 var CURDS = ['dry5', 'brick5', 'plast5', 'plast9'];
 var CURD_SHORT = { dry5:'Сухой 5%', brick5:'В брикетах 5%', plast5:'Пластовой 5%', plast9:'Пластовой 9%' };
-var BP_N = [53, 0, 0, 28], SUGAR_N = ITEMS.sugar.n;
+var BP_N = [53, 0, 0, 28, 0], SUGAR_N = ITEMS.sugar.n;
 var BLENDS = {
   wheat:          { wheat:1 },
   oat:            { oat:1 },
@@ -74,7 +74,7 @@ var FATTY = { def:90, min:85, max:95, word:'жирное жидкое тесто
 var SP = {
   pepper:  { name:'Перец чёрный молотый', short:'перец' }, garlic:{ name:'Чеснок сушёный', short:'чеснок сушёный' }, herbs:{ name:'Прованские травы', short:'прованские травы' },
   nutmeg:  { name:'Мускатный орех', short:'мускатный орех' }, paprika:{ name:'Паприка сладкая', short:'паприка' }, turmeric:{ name:'Куркума', short:'куркума' },
-  cinnamon:{ name:'Корица', short:'корица' }, vanilla:{ name:'Ванильный сахар', n:SUGAR_N, solo:true }, salt:{ name:'Соль', solo:true }
+  cinnamon:{ name:'Корица', short:'корица' }, salt:{ name:'Соль', solo:true }
 };
 
 /* ===================== РЕЦЕПТЫ =====================
@@ -83,8 +83,8 @@ var R = {};
 
 R.sladkaya = { lead:'Базовая сладкая вафля с ванилью. Этот рецепт вы ещё не готовили: все сочетания новые.', kinds:[{
   id:'classic', name:'Сладкая', dough:'liquid', portion:LIQUID, time:[5, 6], loss:0.25, defN:2, butter:true, eggPer100:0.4, slots:[],
-  ref:{ base:'kefir', baseG:70, blend:'oat_rice', flourEq:35, eggs:1, bpRate:0.04, items:[{ k:'sugar', g:15 }] },
-  spices:[{ k:'vanilla', per2:4, note:'или 2–3 капли ванильного экстракта' }, { k:'salt', per2:0.2, note:'подчёркивает сладость' }],
+  ref:{ base:'kefir', baseG:70, blend:'oat_rice', flourEq:35, eggs:1, bpRate:0.04, items:[{ k:'sugar', g:10 }] },
+  vanilla:{ per2:5 }, spices:[{ k:'salt', per2:0.2, note:'подчёркивает сладость' }],
   serving:[{ t:'К ягодам и йогурту', x:'цедра лимона', per2:1 }, { t:'К мёду или варенью', x:'корица', per2:0.5 }],
   bases:[
     { id:'kefir',  note:'Лёгкая и воздушная' },
@@ -103,7 +103,7 @@ R.sladkaya = { lead:'Базовая сладкая вафля с ванилью.
     { id:'oat',       note:'Мягче, корочка менее хрустящая' }
   ],
   starch:'Корочка станет заметно хрустящей.',
-  prep:[], mix:'Взбейте яйцо с сахаром, ванильным сахаром и солью, добавьте основу и перемешайте. Всыпьте муку с разрыхлителем{starch} и размешайте до однородности, без комочков.',
+  prep:[], mix:'Взбейте яйцо с сахаром, ванилью и солью, добавьте основу и перемешайте. Всыпьте муку с разрыхлителем{starch} и размешайте до однородности, без комочков.',
   tested:[]
 }]};
 
@@ -142,8 +142,8 @@ R.nesladkaya = { lead:'Нейтральная вафля к супу, к тво�
 
 R.shokoladnaya = { lead:'Шоколадная вафля с какао.', kinds:[{
   id:'classic', name:'Шоколадная', dough:'liquid', portion:LIQUID, time:[4, 5], loss:0.25, defN:2, butter:true, eggPer100:0.4, slots:[],
-  ref:{ base:'soft', baseG:80, blend:'oat', flourEq:20, eggs:1, bpRate:0.05, items:[{ k:'cocoa', g:10 }, { k:'sugar', g:15, range:'10–20 г по вкусу' }] },
-  spices:[{ k:'salt', per2:0.2, note:'усиливает вкус шоколада' }, { k:'vanilla', per2:4, note:'или 2–3 капли ванильного экстракта' }],
+  ref:{ base:'soft', baseG:80, blend:'oat', flourEq:20, eggs:1, bpRate:0.05, items:[{ k:'cocoa', g:10 }, { k:'sugar', g:15, range:[10, 20] }] },
+  vanilla:{ per2:5 }, spices:[{ k:'salt', per2:0.2, note:'усиливает вкус шоколада' }],
   serving:[{ t:'Мокко', x:'растворимый кофе', per2:1 }, { t:'Пряная', x:'корица', per2:0.5 }],
   bases:[
     { id:'soft',   note:'Нежная, шоколадно-творожная' },
@@ -160,11 +160,11 @@ R.shokoladnaya = { lead:'Шоколадная вафля с какао.', kinds:
     { id:'rice_coco', note:'С кокосовой ноткой, как «Баунти»' }
   ],
   starch:'Вафля станет хрустящей снаружи.',
-  prep:[], mix:'Взбейте яйцо с сахаром, ванильным сахаром и солью, добавьте основу. Смешайте муку, какао и разрыхлитель{starch}, всыпьте и размешайте до однородности.',
+  prep:[], mix:'Взбейте яйцо с сахаром, ванилью и солью, добавьте основу. Смешайте муку, какао и разрыхлитель{starch}, всыпьте и размешайте до однородности.',
   tested:[
-    { base:'soft', baseG:80, flour:{ oat:20 }, eggs:1, bp:1, items:[{ k:'cocoa', g:10 }, { k:'sugar', g:15, range:'10–20 г по вкусу' }], waffles:2 },
-    { base:'soft', baseG:80, flour:{ alm:10, rice:15 }, eggs:1, bp:1, items:[{ k:'cocoa', g:10 }, { k:'sugar', g:15, range:'10–20 г по вкусу' }], waffles:2 },
-    { base:'milk', baseG:70, flour:{ wheat:40 }, eggs:1, bp:3, items:[{ k:'cocoa', g:10 }, { k:'sugar', g:15, range:'10–20 г по вкусу' }], waffles:2,
+    { base:'soft', baseG:80, flour:{ oat:20 }, eggs:1, bp:1, items:[{ k:'cocoa', g:10 }, { k:'sugar', g:15, range:[10, 20] }], waffles:2 },
+    { base:'soft', baseG:80, flour:{ alm:10, rice:15 }, eggs:1, bp:1, items:[{ k:'cocoa', g:10 }, { k:'sugar', g:15, range:[10, 20] }], waffles:2 },
+    { base:'milk', baseG:70, flour:{ wheat:40 }, eggs:1, bp:3, items:[{ k:'cocoa', g:10 }, { k:'sugar', g:15, range:[10, 20] }], waffles:2,
       note:'Вытекало из вафельницы. Муку, кажется, можно уменьшить, разрыхлителя точно меньше.',
       comment:'У вас было по 94 г на вафлю и 3 г разрыхлителя: тесто поднялось и вытекло. Здесь по 80 г на вафлю.',
       tweak:{ label:'Меньше муки и разрыхлителя', desc:'мука 32 г вместо 40, разрыхлитель 1,5 г вместо 3 (на 2 вафли)', flour:{ wheat:32 }, bp:1.5 } }
@@ -234,7 +234,7 @@ R.yablochnaya = { lead:'Все вафли с яблоком: обычная, с�
   { id:'syrnik', name:'Яблочный сырник', dough:'thick', portion:THICK, time:[7, 7], loss:0.2, defN:2, butter:false, eggPer100:0.316, slots:['curd', 'apple'], apple:{},
     curd:{ def:'dry5', baseRatio:{ dry5:0.5, brick5:0.35, plast5:0.15, plast9:0.1 }, recBase:{ dry5:'soft', brick5:'soft', plast5:'soft', plast9:'none' } },
     ref:{ base:'soft', baseG:100, blend:'wheat_rice', flourEq:70, eggs:2, bpRate:0.043, items:[{ k:'dry5', g:200, slot:'curd' }, { k:'apple', g:130, pcs:2, slot:'apple' }, { k:'sugar', g:30 }] },
-    spices:[{ k:'cinnamon', per2:1, note:'примерно ⅓ ч. л.' }, { k:'vanilla', per2:4, note:'или 2–3 капли ванильного экстракта' }],
+    vanilla:{ per2:5 }, spices:[{ k:'cinnamon', per2:1, note:'примерно ⅓ ч. л.' }],
     serving:[{ t:'Свежая', x:'цедра лимона', per2:1 }],
     bases:null,
     blends:[
@@ -246,7 +246,7 @@ R.yablochnaya = { lead:'Все вафли с яблоком: обычная, с�
     ],
     starch:'Сырник станет нежнее и лучше будет держать форму.',
     prep:['Яблоко натрите и отожмите сок или мелко нарежьте.'],
-    mix:'Разомните творог с основой, сахаром, ванильным сахаром и яйцом, добавьте яблоко. Всыпьте муку с разрыхлителем{starch} и корицей и перемешайте ложкой.',
+    mix:'Разомните творог с основой, сахаром, ванилью и яйцом, добавьте яблоко. Всыпьте муку с разрыхлителем{starch} и корицей и перемешайте ложкой.',
     tested:[
       { curd:'dry5', base:'soft', baseG:100, flour:{ wheat:30, rice:40 }, eggs:2, bp:3, items:[{ k:'dry5', g:200, slot:'curd' }, { k:'apple', g:130, pcs:2, slot:'apple' }, { k:'sugar', g:30 }], waffles:6,
         note:'Вкусно. По 100 г на вафлю вышли не квадратные — лучше 120–130 г.', comment:'Здесь по 125 г на вафлю.' },
@@ -262,7 +262,7 @@ R.syrnik = { lead:'Вафля-сырник. Выберите творог: по�
       portion:{ plast9:FATTY }, time:{ plast9:[5.5, 5.5] }, eggPer100:{ plast9:0.18 } },
     ref:{ base:'soft', baseG:100, blend:'wheat', flourEq:25, eggs:1, bpRate:0.04, items:[{ k:'dry5', g:150, slot:'curd' }, { k:'sugar', g:20 }] },
     refByCurd:{ plast9:{ base:'none', baseG:0, blend:'wheat', flourEq:60, eggs:1, bpRate:0.04, items:[{ k:'plast9', g:400, slot:'curd' }, { k:'sugar', g:30 }] } },
-    spices:[{ k:'vanilla', per2:4, note:'или 2–3 капли ванильного экстракта' }, { k:'salt', per2:0.2 }],
+    vanilla:{ per2:5 }, spices:[{ k:'salt', per2:0.2 }],
     serving:[{ t:'Лимонные', x:'цедра лимона', per2:1 }, { t:'С изюмом', x:'изюм, распаренный и обсушенный', per2:15 }],
     bases:null,
     blends:[
@@ -273,7 +273,7 @@ R.syrnik = { lead:'Вафля-сырник. Выберите творог: по�
       { id:'oat',        note:'Плотнее, по-домашнему' }
     ],
     starch:'Сырник станет нежнее и лучше будет держать форму.',
-    prep:[], mix:'Разомните творог с основой, сахаром, ванильным сахаром, солью и яйцом. Всыпьте муку с разрыхлителем{starch} и перемешайте.',
+    prep:[], mix:'Разомните творог с основой, сахаром, ванилью, солью и яйцом. Всыпьте муку с разрыхлителем{starch} и перемешайте.',
     tested:[
       { curd:'dry5', base:'soft', baseG:100, flour:{ wheat:25 }, eggs:1, bp:1, items:[{ k:'dry5', g:150, slot:'curd' }, { k:'sugar', g:20 }], waffles:2,
         note:'Сильно вытекало из вафельницы, в остальном всё хорошо.', comment:'У вас было по 173 г на вафлю, это больше максимума 150 г. Здесь по 125 г.' },
@@ -493,7 +493,7 @@ function compute(K, st){
   if (s == null) s = N * (P - bw) / DF;
   /* продукты в масштабе */
   var A = {
-    items: f.items.map(function(it){ return { k:it.k, g:itemMass(it, st) * s, pcs:it.pcs ? it.pcs * s : null, slot:it.slot, range:it.range }; }),
+    items: f.items.map(function(it){ return { k:it.k, g:itemMass(it, st) * s, pcs:it.pcs ? it.pcs * s : null, slot:it.slot, range:it.range ? it.range.map(function(v){ return v * s; }) : null }; }),
     baseG: f.baseG * s, flour: scaleFlour(f.flour, s), starch: f.starch * s, bp: f.bp * s, salt: f.salt != null ? f.salt * s : null
   };
   /* ваши количества */
@@ -552,11 +552,13 @@ function compute(K, st){
   var comp = { g:0, where:null };
   if (!f.preset && Math.abs((eggs - prop) * EGG_G) > 0.5 && L.base == null){
     var dW = (eggs - prop) * EGG_G * EGG_WET;
+    /* поправляем, только если это заметно влияет на тесто: основа на 10 г и больше, мука на 5 г и больше */
     if (A.baseG > 0 && !K.coat){
-      var nb2 = Math.max(A.baseG * 0.4, A.baseG - dW / BASES[f.base].wet); comp = { g: nb2 - A.baseG, where:'base' }; A.baseG = nb2;
+      var nb2 = Math.max(A.baseG * 0.4, A.baseG - dW / BASES[f.base].wet);
+      if (Math.abs(nb2 - A.baseG) >= 10){ comp = { g: nb2 - A.baseG, where:'base' }; A.baseG = nb2; }
     } else if (!flourLocked){
-      var eqS = eqOf(A.flour) + A.starch * FLOURS.starch.c, k = (eqS + dW * f.r) / eqS;
-      var before = sumOf(A.flour) + A.starch; A.flour = scaleFlour(A.flour, k); A.starch *= k; comp = { g: sumOf(A.flour) + A.starch - before, where:'flour' };
+      var eqS = eqOf(A.flour) + A.starch * FLOURS.starch.c, k = (eqS + dW * f.r) / eqS, before = sumOf(A.flour) + A.starch;
+      if (Math.abs((k - 1) * before) >= 5){ A.flour = scaleFlour(A.flour, k); A.starch *= k; comp = { g: sumOf(A.flour) + A.starch - before, where:'flour' }; }
     }
   }
   var D = A.items.reduce(function(a, it){ return a + it.g; }, 0) + A.baseG + sumOf(A.flour) + A.starch + A.bp + eggs * EGG_G;
@@ -568,7 +570,7 @@ function compute(K, st){
     var target = N * P - bw * N, noEgg = D - eggs * EGG_G - fixedG;
     if (noEgg > 0){
       var kk = (target - eggs * EGG_G - fixedG) / noEgg;
-      A.items.forEach(function(it){ if (it.fixed) return; it.g *= kk; if (it.pcs) it.pcs *= kk; });
+      A.items.forEach(function(it){ if (it.fixed) return; it.g *= kk; if (it.pcs) it.pcs *= kk; if (it.range) it.range = it.range.map(function(v){ return v * kk; }); });
       A.baseG *= kk; A.flour = scaleFlour(A.flour, kk); A.starch *= kk; A.bp *= kk; if (A.salt) A.salt *= kk;
       if (comp.g) comp.g *= kk;
       D = target;
@@ -592,19 +594,42 @@ function compute(K, st){
       [N - 2, N, N + 2].forEach(function(n2){ if (n2 >= 2) suggest.push({ n:n2, g: aG * (n2 * P0 - bw * n2) / D }); });
     }
   }
+  /* округление: заметные веса — кратно 5 г, мелочи (разрыхлитель, соль, специи) как есть */
+  function r5(g){ return g >= 7.5 ? Math.round(g / 5) * 5 : Math.round(g); }
+  A.items.forEach(function(it){ if (!(it.slot && adds[it.slot] != null) && !(it.fixed && st.cheeseG != null)) it.g = r5(it.g); });
+  if (L.base == null && A.baseG > 0) A.baseG = r5(A.baseG);
+  if (!flourLocked) Object.keys(A.flour).forEach(function(c){ A.flour[c] = r5(A.flour[c]); });
+  if (A.starch > 0) A.starch = r5(A.starch);
+  if (A.bp > 0) A.bp = Math.max(0.5, Math.round(A.bp * 2) / 2);
+  if (comp.g) comp.g = Math.round(comp.g / 5) * 5;
+  D = A.items.reduce(function(a, it){ return a + it.g; }, 0) + A.baseG + sumOf(A.flour) + A.starch + A.bp + eggs * EGG_G + (A.salt || 0);
+  /* без своих количеств: после округления подгоняем основу шагом 5 г, чтобы общий вес был как можно ближе к N × P */
+  if (!anchor){
+    var want = N * P - bw * N, diff = want - D, tgt = null;
+    if (L.base == null && A.baseG >= 10) tgt = 'base';
+    else { var bi = null; A.items.forEach(function(it){ if (!it.fixed && !(it.slot && adds[it.slot] != null) && (!bi || it.g > bi.g)) bi = it; }); if (bi && bi.g >= 10) tgt = bi; }
+    for (var guard = 0; tgt && guard < 40; guard++){
+      var step = diff > 0 ? 5 : -5;
+      if (Math.abs(diff - step) >= Math.abs(diff)) break;
+      if (tgt === 'base'){ if (A.baseG + step < 5) break; A.baseG += step; } else { if (tgt.g + step < 5) break; tgt.g += step; }
+      D += step; diff -= step;
+    }
+  }
   var butter = bw * N, mass = D + butter;
-  var tot = [0, 0, 0, 0];
-  function add(g, nn){ for (var i = 0; i < 4; i++) tot[i] += g * nn[i] / 100; }
+  var tot = [0, 0, 0, 0, 0];
+  function add(g, nn){ for (var i = 0; i < 5; i++) tot[i] += g * (nn[i] || 0) / 100; }
   A.items.forEach(function(it){ add(it.g, ITEMS[it.k].n); });
   add(A.baseG, BASES[f.base].n); Object.keys(A.flour).forEach(function(fl){ add(A.flour[fl], FLOURS[fl].n); });
   add(A.starch, FLOURS.starch.n); add(A.bp, BP_N); add(eggs * EGG_G, EGG_N); add(butter, ITEMS.butter.n);
   (K.spices || []).forEach(function(sp){ if (SP[sp.k].n) add(sp.per2 * N / 2, SP[sp.k].n); });
   var Pact = mass / N;
+  /* что показываем: без своих количеств — ровно ту порцию, что в поле (разница после округления меньше 1,5 г на вафлю) */
+  var Pshow = anchor ? Pact : P, Dshow = anchor ? mass : P * N;
   return {
     K:K, f:f, A:A, s:s, N:N, P0:P0, por:por, anchor:anchor, lockFit:lockFit, suggest:suggest, thickTip:thickTip, eggs:eggs, prop:prop, ideal:ideal, need:needE, comp:comp,
     balance:balance, rebal:rebal, tested:tested, butter:butter, D:mass, Pact:Pact, flourLocked:flourLocked,
     k100: tot.map(function(v){ return v / mass * 100; }), kReady: tot.map(function(v){ return v / mass * 100 / (1 - K.loss); }),
-    kOne: tot.map(function(v){ return v / N; }), oneReady: Pact * (1 - K.loss), time: timeFor(K, st)
+    kOne: tot.map(function(v){ return v / N; }), oneReady: Pshow * (1 - K.loss), Pshow:Pshow, Dshow:Dshow, time: timeFor(K, st)
   };
 }
 
@@ -667,7 +692,7 @@ function mount(root, rec){
           '<dl class="facts" id="vFacts"></dl>' +
           '<div><p class="label">КБЖУ на 100 г теста</p><div class="kbju" id="vK1"></div>' +
           '<p class="label" style="margin-top:14px">На 100 г готовых вафель</p><div class="kbju" id="vK2"></div>' +
-          '<p class="label" style="margin-top:14px">На 1 вафлю</p><div class="kbju" id="vK3"></div><p class="hint" id="vKHint" style="margin-top:8px"></p></div>' +
+          '<p class="label" style="margin-top:14px">На 1 вафлю</p><div class="kbju" id="vK3"></div><p class="kbju-unit">Белки, жиры, углеводы и клетчатка — в граммах.</p><p class="hint" id="vKHint" style="margin-top:8px"></p></div>' +
         '</div>' +
         '<section class="block steps"><h2>Как готовить</h2><ol id="vSteps"></ol></section>' +
       '</div>' +
@@ -771,8 +796,9 @@ function mount(root, rec){
   $('vResetAll').addEventListener('click', function(){ clearLocks(); st.portion = null; st.tweak = false; st.cheeseG = null; st.N = K().defN; changed(); });
 
   function kbju(k){
-    return '<div><b>' + Math.round(k[0]) + '</b><span>ккал</span></div><div><b>' + fmt1(Math.round(k[1] * 10) / 10) + '</b><span>белки, г</span></div>' +
-      '<div><b>' + fmt1(Math.round(k[2] * 10) / 10) + '</b><span>жиры, г</span></div><div><b>' + fmt1(Math.round(k[3] * 10) / 10) + '</b><span>углеводы, г</span></div>';
+    return '<div><b>' + Math.round(k[0]) + '</b><span>ккал</span></div><div><b>' + fmt1(Math.round(k[1] * 10) / 10) + '</b><span>белки</span></div>' +
+      '<div><b>' + fmt1(Math.round(k[2] * 10) / 10) + '</b><span>жиры</span></div><div><b>' + fmt1(Math.round(k[3] * 10) / 10) + '</b><span>углеводы</span></div>' +
+      '<div><b>' + fmt1(Math.round((k[4] || 0) * 10) / 10) + '</b><span>клетчатка</span></div>';
   }
   function row(name, qty, sub){ return '<li><span class="ing-n">' + name + '</span><span class="ing-q">' + qty + '</span>' + (sub ? '<span class="ing-s">' + sub + '</span>' : '') + '</li>'; }
   function delta(cur, base){
@@ -828,7 +854,7 @@ function mount(root, rec){
     if ($('vFl-total')) paintField('vFl-total', L.flourTotal != null ? L.flourTotal : Object.keys(A.flour).reduce(function(a, c){ return a + A.flour[c]; }, 0), L.flourTotal != null, L.flourTotal != null ? 'Ваше количество, делится по пропорции смеси' : 'Сумма всех видов муки');
     $('vN').textContent = r.N;
     $('vNHint').textContent = (r.N / 2) + ' ' + plural(r.N / 2, ['партия', 'партии', 'партий']) + ': вафельница печёт по 2 вафли' + (r.anchor ? '. Число вафель подобрано под ваши количества' : '');
-    var pIn = $('vP'); if (document.activeElement !== pIn) pIn.value = fmt(r.anchor ? r.Pact : (st.portion || r.P0));
+    var pIn = $('vP'); if (document.activeElement !== pIn) pIn.value = fmt(r.Pshow);
     $('vPBox').classList.toggle('user', !!st.portion && !r.anchor);
     $('vPReset').hidden = !st.portion || !!r.anchor;
     $('vPHint').textContent = 'Для этого рецепта ' + r.por.word + '.';
@@ -860,7 +886,7 @@ function mount(root, rec){
       if (!it.slot) return;
       var base = B.items[i] && B.items[i].k === it.k ? B.items[i].g : null, sub = [];
       if (it.k === 'apple'){ sub.push(st.appleForm === 'chop' ? 'мелко нарезанное' : 'тёртое и отжатое'); if (it.pcs) sub.push('≈ ' + fmt1(Math.round(it.pcs * 2) / 2) + ' шт'); }
-      if (it.k === 'potato') sub.push('≈ ' + fmt(it.g * 110 / 80) + ' г сырого');
+      if (it.k === 'potato') sub.push('≈ ' + fmt(Math.round(it.g * 110 / 80 / 5) * 5) + ' г сырого');
       if (it.k === 'chicken') sub.push(k.id === 'kusochki' ? 'кусочками до 1 см' : 'пробить в блендере');
       h += row(esc(ITEMS[it.k].name), fmt(it.g) + ' г', join([ok, L.adds[it.slot] != null ? 'ваше количество' : '', delta(it.g, base)].concat(sub)));
     });
@@ -871,7 +897,14 @@ function mount(root, rec){
     Object.keys(A.flour).forEach(function(c){ h += row(esc(FLOURS[c].name) + ' мука', fmt(A.flour[c]) + ' г', join([ok, L.flour[c] != null ? 'ваше количество' : '', delta(A.flour[c], B.flour[c])])); });
     if (A.starch > 0) h += row('Кукурузный крахмал', fmt(A.starch) + ' г', '');
     if (r.butter > 0) h += row(esc(ITEMS.butter.name), fmt(r.butter) + ' г', '10 г на каждые 2 вафли, растопить');
-    A.items.forEach(function(it){ if (!it.slot) h += row(esc(ITEMS[it.k].name), fmt(it.g) + ' г', join([ok, it.range || '', it.k === 'cheese' && k.cheese ? (st.cheeseG != null ? 'ваше количество' : 'рекомендую') + ' · натереть мелко' : ''])); });
+    A.items.forEach(function(it){
+      if (it.slot) return;
+      var rg = it.range ? fmt(Math.round(it.range[0] / 5) * 5) + '–' + fmt(Math.round(it.range[1] / 5) * 5) + ' г по вкусу' : '';
+      var vs = it.k === 'sugar' && k.vanilla ? Math.min(it.g, Math.max(5, Math.round(k.vanilla.per2 * r.N / 2 / 5) * 5)) : 0;
+      h += row(esc(ITEMS[it.k].name), fmt(it.g) + ' г', join([ok, rg, vs ? 'из них ' + fmt(vs) + ' г рекомендую заменить ванильным сахаром' : '',
+        it.k === 'cheese' && k.cheese ? (st.cheeseG != null ? 'ваше количество' : 'рекомендую') + ' · натереть мелко' : '']));
+      if (vs){ var dr = r.N; h += row('Ваниль', dr + ' ' + plural(dr, ['капля', 'капли', 'капель']), 'экстракт или ванилин на кончике ножа · только если не брали ванильный сахар'); }
+    });
     if (A.bp > 0.05) h += row('Разрыхлитель', fmt(A.bp) + ' г', ok);
     if (A.salt) h += row('Соль', fmt(A.salt) + ' г', A.salt < 1.5 ? 'щепотка' : '');
     var mixSp = (k.spices || []).filter(function(sp){ return !SP[sp.k].solo; });
@@ -893,7 +926,7 @@ function mount(root, rec){
         (r.need <= 0.95 ? ((f.base === 'soft' || f.base === 'yogurt') ? 'творожная основа и мука сами хорошо держат тесто, поэтому округляю вниз' : 'мука хорошо держит форму, поэтому округляю вниз') : 'больше для связки не нужно');
       var cmp = r.comp.where === 'base' && Math.abs(r.comp.g) >= 1 ? ' Чтобы густота не изменилась, ' + BASES[f.base].gen + ' на ' + fmt(Math.abs(r.comp.g)) + ' г ' + (r.comp.g > 0 ? 'больше.' : 'меньше.') :
         r.comp.where === 'flour' && Math.abs(r.comp.g) >= 1 ? ' Чтобы густота не изменилась, муки на ' + fmt(Math.abs(r.comp.g)) + ' г ' + (r.comp.g > 0 ? 'больше.' : 'меньше.') :
-        r.tested ? ' Остальные продукты — точно в ваших пропорциях.' + (r.thickTip >= 3 ? ' Если тесто покажется гуще обычного, добавьте до ' + fmt(r.thickTip) + ' г ' + BASES[f.base].gen + '.' : '') : '';
+        r.tested ? ' Остальные продукты — точно в ваших пропорциях.' + (r.thickTip >= 3 ? ' Если тесто покажется гуще обычного, добавьте до ' + fmt(Math.max(5, Math.round(r.thickTip / 5) * 5)) + ' г ' + BASES[f.base].gen + '.' : '') : '';
       notes.push(['', 'Яйца: при пропорциональном пересчёте вышло бы ' + fmt1(Math.round(r.prop * 10) / 10) + ', а для связки нужно около ' + fmt1(Math.round(r.ideal * 10) / 10) + '. Беру ' + r.eggs + ': ' + why + '.' + cmp]);
     }
     if (r.rebal != null && Math.abs(r.rebal) >= 1) notes.push(['', 'Муки ' + (r.rebal < 0 ? 'меньше' : 'больше') + ', чем по рецепту, поэтому ' + BASES[f.base].gen + ' ' + (r.rebal < 0 ? 'меньше' : 'больше') + ': ' + fmt(A.baseG) + ' г. Так густота останется прежней.']);
@@ -917,18 +950,18 @@ function mount(root, rec){
     $('vNotes').innerHTML = notes.map(function(n){ return '<li' + (n[0] ? ' class="' + n[0] + '"' : '') + '>' + n[1] + '</li>'; }).join('');
     var batches = r.N / 2, tm = r.time[0] === r.time[1] ? fmt1(r.time[0]) : r.time[0] + '–' + r.time[1];
     $('vFacts').innerHTML =
-      '<dt>Вафель</dt><dd>' + r.N + ' шт по ' + fmt(r.Pact) + ' г теста, всего ' + fmt(r.D) + ' г</dd>' +
+      '<dt>Вафель</dt><dd>' + r.N + ' шт по ' + fmt(r.Pshow) + '&nbsp;г теста, всего ' + fmt(r.Dshow) + '&nbsp;г</dd>' +
       '<dt>Время</dt><dd>' + tm + ' мин на партию · ' + batches + ' ' + plural(batches, ['партия', 'партии', 'партий']) + ' ≈ ' + Math.round(batches * r.time[1]) + ' мин</dd>' +
       '<dt>Готовая вафля</dt><dd>≈ ' + fmt(r.oneReady) + ' г</dd>';
     $('vK1').innerHTML = kbju(r.k100); $('vK2').innerHTML = kbju(r.kReady); $('vK3').innerHTML = kbju(r.kOne);
-    $('vKHint').textContent = 'При выпекании уходит около ' + Math.round(k.loss * 100) + '% влаги: из ' + fmt(r.Pact) + ' г теста выйдет вафля примерно ' + fmt(r.oneReady) + ' г.';
+    $('vKHint').textContent = 'При выпекании уходит около ' + Math.round(k.loss * 100) + '% влаги: из ' + fmt(r.Pshow) + ' г теста выйдет вафля примерно ' + fmt(r.oneReady) + ' г.';
     var steps = ['<b>Разогрейте вафельницу</b>, пока не загорится индикатор готовности.'];
     (k.prep || []).forEach(function(p){ steps.push(p); });
     var mixT = f.base === 'none' ? k.mix.replace('с основой, ', 'с ').replace(', основой', '') : k.mix;
     steps.push(mixT.replace('{starch}', A.starch > 0 ? ' и крахмалом' : '').replace('{cheese}', A.items.some(function(x){ return x.k === 'cheese'; }) ? ', тёртым сыром' : ''));
     if (r.butter > 0) steps.push('Влейте растопленное и чуть остывшее сливочное масло (' + fmt(r.butter) + ' г) и перемешайте.');
     (k.tips || []).forEach(function(p){ steps.push(p); });
-    steps.push('<b>Выложите по ' + fmt(r.Pact) + ' г теста</b> в каждую из двух форм' + (k.dough === 'thick' ? ', разровняйте ложкой' : '') + ' и закройте крышку.');
+    steps.push('<b>Выложите по ' + fmt(r.Pshow) + ' г теста</b> в каждую из двух форм' + (k.dough === 'thick' ? ', разровняйте ложкой' : '') + ' и закройте крышку.');
     steps.push('<b>Выпекайте ' + tm + ' мин.</b>' + (batches > 1 ? ' Всего ' + batches + ' ' + plural(batches, ['партия', 'партии', 'партий']) + '.' : ''));
     steps.push('Готовые вафли выложите на решётку, чтобы снизу не отсырели.');
     $('vSteps').innerHTML = steps.map(function(x){ return '<li>' + x + '</li>'; }).join('');
