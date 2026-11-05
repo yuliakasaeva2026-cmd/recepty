@@ -121,6 +121,9 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--cobalt);outline
 .facts dt{color:var(--muted);font-size:13px;padding-top:1px}
 .facts dd{margin:0;min-width:0}
 .recipe-facts{grid-template-columns:minmax(0,130px) minmax(0,1fr)}
+.recipe-facts .fact-output{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:4px}
+.recipe-facts .fact-chunk{white-space:nowrap}
+.recipe-facts .fact-detail{display:block;color:var(--muted);font-size:12px;margin-top:3px}
 @media(max-width:540px){
   .recipe-facts{grid-template-columns:minmax(0,1fr);gap:3px}
   .recipe-facts dd+dt{margin-top:8px}
@@ -263,7 +266,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   function isFav(id){ return favs.indexOf(id) >= 0; }
   function toggleFav(id){ if (isFav(id)) favs = favs.filter(function(x){ return x !== id; }); else favs.push(id); store('book-favs', favs); }
   function inSection(sid){ return BOOK.recipes.filter(function(r){ return (r.sections || []).indexOf(sid) >= 0; }); }
-  function sorted(list){ return list.slice().sort(function(a,b){ if (a.order != null && b.order != null && a.order !== b.order) return a.order - b.order; return (b.added || '').localeCompare(a.added || '') || a.title.localeCompare(b.title, 'ru'); }); }
+  function sorted(list){ return list.slice().sort(function(a,b){ return a.title.localeCompare(b.title, 'ru'); }); }
 
   function tagHtml(r){
     var t = [];

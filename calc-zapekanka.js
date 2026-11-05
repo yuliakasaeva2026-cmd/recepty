@@ -496,7 +496,7 @@ root.innerHTML = TEMPLATE;
     var formTxt = (fm.two ? 'Две формы, каждая ' : '') + fm.rect[0] + '×' + fm.rect[1] + ' см' + (fm.round ? ' или круглая Ø ' + fm.round + ' см' : '') + ', слой около 4 см';
     var view = {
       raw:c.M, ready:pr.ready, N:pr.n, what:'готовой запеканки', form:formTxt,
-      cooking:[['Режим духовки', 'Верх-низ · 170 °C · ' + tm + '; или конвекция · 155–160 °C · ' + tm]],
+      cooking:[['Режим духовки', 'Верх-низ · 170 °C · ' + tm + ';\nили конвекция · 155–160 °C · ' + tm]],
       after:[['Отдых', '15 мин в выключенной духовке с приоткрытой дверцей'], ['Остывание', 'Не менее 1 ч до нарезки']],
       k100raw:c.kbju, k100:c.kbju.map(function(v){ return v / 0.9; }), kOne:c.tot.map(function(v){ return v / pr.n; })
     };

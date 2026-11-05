@@ -458,7 +458,7 @@ function mount(root, rec){
     /* факты */
     var presentation = C.presentation || {};
     var view = {
-      raw:r.raw, ready:r.ready, N:r.N, what:presentation.what,
+      raw:r.raw, ready:r.ready, N:r.N, what:presentation.what, outputNote:presentation.outputNote,
       form:typeof presentation.form === 'function' ? presentation.form(r) : presentation.form,
       cooking:presentation.cooking, after:presentation.after,
       k100raw:r.k100raw, k100:r.k100, kOne:r.kOne

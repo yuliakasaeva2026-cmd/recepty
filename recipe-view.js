@@ -9,15 +9,23 @@
     var rows = [], approx = r.exact ? '' : '≈ ';
     if (lossy(r)) {
       rows.push(['Вес в сыром виде', grams(r.raw) + ' г']);
-      rows.push(['Потери при приготовлении', '≈ ' + number((1 - r.ready / r.raw) * 100, 1) + '%']);
+      rows.push(['Потери', '≈ ' + number((1 - r.ready / r.raw) * 100, 1) + '%']);
     }
-    var output = 'всего ' + approx + grams(r.ready) + ' г ' + (r.what || 'готового блюда') + ', ' + r.N + ' ' + portions(r.N) + ' по ' + approx + grams(r.ready / r.N) + ' г';
-    if (r.range) output += ' (ожидаемый выход ' + grams(r.range[0]) + '–' + grams(r.range[1]) + ' г)';
-    if (r.exact) output += ' · фактический вес';
-    rows.push(['Выход', output]);
+    var output = r.N === 1
+      ? [approx + grams(r.ready) + ' г', '1 порция']
+      : ['всего ' + approx + grams(r.ready) + ' г', r.N + ' ' + portions(r.N) + ' по ' + approx + grams(r.ready / r.N) + ' г'];
+    var detail = r.outputNote || '';
+    if (r.range) detail = 'Ожидаемый выход ' + grams(r.range[0]) + '–' + grams(r.range[1]) + ' г';
+    if (r.exact) detail = 'Фактический вес';
+    rows.push(['Выход', output, detail]);
     if (r.form) rows.push(['Форма', r.form]);
     rows = rows.concat(r.cooking || [], r.after || []);
-    return rows.map(function(row){ return '<dt>' + esc(row[0]) + '</dt><dd>' + esc(row[1]) + '</dd>'; }).join('');
+    return rows.map(function(row){
+      var value = Array.isArray(row[1])
+        ? '<span class="fact-output">' + row[1].map(function(part){ return '<span class="fact-chunk">' + esc(part) + '</span>'; }).join('<span> · </span>') + '</span>' + (row[2] ? '<span class="fact-detail">' + esc(row[2]) + '</span>' : '')
+        : esc(row[1]).replace(/\n/g, '<br>');
+      return '<dt>' + esc(row[0]) + '</dt><dd>' + value + '</dd>';
+    }).join('');
   }
   function cells(k){
     var labels = ['ккал','белки','жиры','углеводы','клетчатка'];
