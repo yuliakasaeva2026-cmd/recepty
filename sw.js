@@ -1,6 +1,6 @@
 /* Сохраняет книгу на телефоне, чтобы она открывалась без интернета. */
-const CACHE = 'recepty-v5-r2';
-const ASSETS = ['./', './index.html', './recipes.js', './calc-zapekanka.js', './calc-vafli.js', './calc-recept.js', './calc-lyulya.js', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png'];
+const CACHE = 'recepty-v6';
+const ASSETS = ['./', './index.html', './recipes.js', './recipe-view.js', './calc-zapekanka.js', './calc-vafli.js', './calc-recept.js', './calc-lyulya.js', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
 });

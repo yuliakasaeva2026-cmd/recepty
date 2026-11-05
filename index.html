@@ -120,6 +120,11 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--cobalt);outline
 .facts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;margin:0}
 .facts dt{color:var(--muted);font-size:13px;padding-top:1px}
 .facts dd{margin:0;min-width:0}
+.recipe-facts{grid-template-columns:minmax(0,130px) minmax(0,1fr)}
+@media(max-width:540px){
+  .recipe-facts{grid-template-columns:minmax(0,1fr);gap:3px}
+  .recipe-facts dd+dt{margin-top:8px}
+}
 .kbju{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-top:6px}
 .kbju div{background:var(--sunk);border-radius:10px;padding:8px 1px;text-align:center;min-width:0}
 .kbju b{display:block;font-family:var(--f-num);font-weight:500;font-size:16px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
@@ -235,6 +240,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <main class="wrap view" id="view"></main>
 
 <script src="recipes.js"></script>
+<script src="recipe-view.js"></script>
 <script src="calc-zapekanka.js"></script>
 <script src="calc-vafli.js"></script>
 <script src="calc-recept.js"></script>

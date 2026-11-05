@@ -1,5 +1,5 @@
 /* Люля-кебаб: независимые количества трёх видов мяса, порции и КБЖУ.
-   Данные рецепта — recipes.js, поле lyulya. Кулинарный режим пока пробный. */
+   Данные рецепта — recipes.js, поле lyulya. */
 (function(){
 'use strict';
 var MAX_MEAT = 100000, MAX_N = 200, MAX_PORTION = 1000, MAX_READY = 100000;
@@ -98,8 +98,8 @@ function mount(root, recipe){
       '</section>' +
       '<p class="err" role="alert" id="lError" hidden></p><button class="ghost" type="button" id="lReset">Вернуть всё к рецепту</button>' +
     '</div><div class="result" id="lResult" aria-live="polite">' +
-      '<section class="dish"><div class="dish-head"><h2>Что положить</h2><span class="pill new">Пробный режим</span></div><ul class="ing" id="lIngredients"></ul><ul class="notes" id="lNotes"></ul><dl class="facts" id="lFacts"></dl><div id="lNutrition"></div></section>' +
-      '<section class="block steps"><h2>Как готовить</h2><p class="hint">' + esc(C.oven) + '. Время пробное: одинаковый диапазон для разных пропорций мяса, готовность проверяйте перед отдыхом.</p><ol id="lSteps"></ol></section>' +
+      '<section class="dish"><div class="dish-head"><h2>Что положить</h2></div><ul class="ing" id="lIngredients"></ul><ul class="notes" id="lNotes"></ul><dl class="facts recipe-facts" id="lFacts"></dl><div id="lNutrition"></div></section>' +
+      '<section class="block steps"><h2>Как готовить</h2><ol id="lSteps"></ol></section>' +
     '</div></div>';
   function save(){ try { localStorage.setItem(KEY, JSON.stringify(st)); } catch(e){} }
   function paint(id, value){ if (document.activeElement !== $(id)) $(id).value = value; }
@@ -170,10 +170,6 @@ function mount(root, recipe){
   function row(name, qty, hint){
     return '<li><span class="ing-n">' + esc(name) + '</span><span class="ing-q">' + esc(qty) + '</span>' + (hint ? '<span class="ing-s">' + esc(hint) + '</span>' : '') + '</li>';
   }
-  function nutrition(k){
-    var labels = ['ккал','белки','жиры','углеводы','клетчатка'];
-    return '<div class="kbju">' + k.map(function(v, i){ return '<div><b>' + (i ? fmt(v) : whole(v)) + '</b><span>' + labels[i] + '</span></div>'; }).join('') + '</div>';
-  }
   function update(){
     var r = compute(C, st), bad = Object.keys(invalid).some(function(k){ return invalid[k]; }), empty = r.meat <= 0;
     C.meats.forEach(function(m, i){
@@ -217,25 +213,24 @@ function mount(root, recipe){
       row(C.onion.name, whole(r.onion) + ' г', '20% от мяса, округление вверх до 5 г') +
       row('Соль', r.salt.toFixed(1).replace('.', ',') + ' г', '0,5% от мяса и овощей до добавления соли; округление до 0,1 г') +
       row('Специи', 'по вкусу', '(' + C.spices + ')');
-    var notes = ['Выход 720–800 г относится к базовому рецепту. Для другого состава и количества это приблизительный пересчёт; потери зависят от мяса и приготовления.'];
-    if (r.meats[0] > 0 && !r.meats[1] && !r.meats[2]) notes.push('Только грудка: особенно следите за готовностью и корочкой, чтобы не передержать. Время пока пробное.');
-    notes.push('Для формы 20 × 20 см оптимальное количество сырой смеси — 995 г.');
-    if (st.mode === 'desired') notes.push('Желаемый выход: ' + fmt(st.desired) + ' г. После округления продуктов средний ожидаемый выход — ≈ ' + whole(r.estimated) + ' г.');
+    var notes = [];
+    if (r.meats[0] > 0 && !r.meats[1] && !r.meats[2]) notes.push('Только грудка: следите за корочкой, чтобы не передержать.');
+    if (st.mode === 'desired') notes.push('Желаемый выход: ' + fmt(st.desired) + ' г; после округления продуктов — ≈ ' + whole(r.estimated) + ' г.');
     $('lNotes').innerHTML = notes.map(function(n){ return '<li>' + esc(n) + '</li>'; }).join('');
-    var output = r.measured ? fmt(r.ready) + ' г — ваш готовый вес' : '≈ ' + whole(r.readyLow) + '–' + whole(r.readyHigh) + ' г';
-    var each = r.measured ? fmt(r.per) + ' г' : '≈ ' + whole(r.readyLow / st.N) + '–' + whole(r.readyHigh / st.N) + ' г';
-    $('lFacts').innerHTML = '<dt>Сырая смесь</dt><dd>' + fmt(r.raw) + ' г, с солью, без специй</dd>' +
-      '<dt>Выход</dt><dd>' + output + '</dd><dt>Порции</dt><dd>' + st.N + ' по ' + each + '</dd>' +
-      '<dt>Толщина</dt><dd>' + fmt(C.thickness) + ' см сырой смеси</dd><dt>Духовка</dt><dd>' + esc(C.oven) + '</dd>' +
-      '<dt>3D-Горячий воздух</dt><dd>' + C.hotAir.temperature + ' °C · ' + C.hotAir.minutes.join('–') + ' мин</dd>' +
-      '<dt>Гриль с конвекцией</dt><dd>' + C.grill.temperature.join('–') + ' °C · ' + C.grill.minutes.join('–') + ' мин</dd>' +
-      '<dt>Отдых</dt><dd>' + C.rest + ' мин под фольгой вне духовки</dd>';
-    $('lNutrition').innerHTML = '<p class="label">На 100 г сырой смеси</p>' + nutrition(r.k100raw) +
-      '<p class="label" style="margin-top:14px">На 100 г готового блюда</p>' + nutrition(r.k100) +
-      '<p class="hint">' + (r.measured ? 'По введённому готовому весу: ' + fmt(r.ready) : 'По среднему ожидаемому выходу: ≈ ' + whole(r.ready)) + ' г.</p>' +
-      '<p class="label" style="margin-top:14px">На 1 порцию из ' + st.N + ' · ' + (r.measured ? '' : '≈ ') + fmt(r.per) + ' г</p>' + nutrition(r.kOne) +
-      (r.measured ? '<p class="hint">При том же составе и числе порций КБЖУ одной порции остаются прежними: меняются её вес и КБЖУ на 100 г.</p>' : '') +
-      '<p class="kbju-unit">Белки, жиры, углеводы и клетчатка — в граммах.</p><p class="hint">КБЖУ приблизительные: без специй по вкусу и без поправки на потерю жира и сока. Самсон — 143 ккал, Б 19, Ж 7,5, У 0 на 100 г; курица и лук — справочник книги, перец — красный сладкий.</p>';
+    var view = {
+      raw:r.raw, ready:r.ready, N:st.N, exact:r.measured,
+      range:r.measured ? null : [r.readyLow, r.readyHigh],
+      form:'Слой ' + fmt(C.thickness) + ' см. Для формы 20×20 см оптимально 995 г сырой смеси',
+      cooking:[
+        ['Режим духовки', '3D-Горячий воздух · ' + C.hotAir.temperature + ' °C · ' + C.hotAir.minutes.join('–') + ' мин'],
+        ['Финишная корочка', 'Гриль с конвекцией · ' + C.grill.temperature.join('–') + ' °C · ' + C.grill.minutes.join('–') + ' мин']
+      ],
+      after:[['Отдых', C.rest + ' мин под фольгой вне духовки']],
+      k100raw:r.k100raw, k100:r.k100, kOne:r.kOne,
+      source:r.meats[2] ? 'Для расчётов использовался говяжий фарш Самсон — 143 ккал, Б 19, Ж 7,5, У 0 на 100 г.' : ''
+    };
+    $('lFacts').innerHTML = window.RecipeView.facts(view);
+    $('lNutrition').innerHTML = window.RecipeView.nutrition(view);
     var steps = [
       'Очень мелко порубите очищенные лук и болгарский перец, не превращая их в жидкое пюре. Указан вес овощей после очистки.',
       'Вымесите холодный фарш с солью до липкости, затем вмешайте овощи и специи. Вымешивайте примерно 5–7 минут, не давая смеси нагреться.',
@@ -244,7 +239,7 @@ function mount(root, recipe){
       'Выложите смесь ровным слоем ' + fmt(C.thickness) + ' см, уплотните без воздушных пустот.',
       'Готовьте без крышки: «3D-Горячий воздух» при ' + C.hotAir.temperature + ' °C — ' + C.hotAir.minutes.join('–') + ' минут. Время отсчитывайте после установки формы в разогретую духовку.',
       'Переключите на «Гриль с конвекцией»: ' + C.grill.temperature.join('–') + ' °C — ' + C.grill.minutes.join('–') + ' минуты. Следите за корочкой, не допускайте подгорания.',
-      'Перед извлечением проверьте готовность в середине слоя, не касаясь дна: ' + (r.poultry ? 'в составе есть курица — не менее 74 °C.' : 'только говяжий фарш — не менее 71 °C.') + ' Если температура ниже, продолжите приготовление до готовности; если корочка уже достаточная, вернитесь к «3D-Горячему воздуху». Пробное время и последующий отдых не заменяют эту проверку.',
+      'Перед извлечением проверьте готовность в середине слоя, не касаясь дна: ' + (r.poultry ? 'в составе есть курица — не менее 74 °C.' : 'только говяжий фарш — не менее 71 °C.') + ' Если температура ниже, продолжите приготовление до готовности; если корочка уже достаточная, вернитесь к «3D-Горячему воздуху».',
       'Достаньте форму из духовки, поставьте на сухую жаростойкую подставку на столе. Накройте сверху листом фольги и оставьте на ' + C.rest + ' минут. Разделите на ' + st.N + ' порций.'
     ];
     $('lSteps').innerHTML = steps.map(function(s){ return '<li>' + esc(s) + '</li>'; }).join('');

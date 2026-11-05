@@ -208,7 +208,7 @@ function mount(root, rec){
           '<div class="dish-head"><h2>Что положить</h2><span class="pill" id="cStatus"></span></div>' +
           '<ul class="ing" id="cIng"></ul>' +
           '<ul class="notes" id="cNotes"></ul>' +
-          '<dl class="facts" id="cFacts"></dl>' +
+          '<dl class="facts recipe-facts" id="cFacts"></dl>' +
           '<div id="cKbju"></div>' +
         '</div>' +
         '<section class="block steps"><h2>Как готовить</h2><ol id="cSteps"></ol></section>' +
@@ -330,10 +330,6 @@ function mount(root, rec){
   }
   $('cResetAll').addEventListener('click', function(){ st.lock = null; st.portion = null; st.N = null; st.fixS = null; st.mainPer = null; st.mlock = {}; st.ptot = {}; st.pshare = {}; st.split = null; changed(); });
 
-  function kbju(k){
-    return '<div class="kbju"><div><b>' + Math.round(k[0]) + '</b><span>ккал</span></div><div><b>' + fmt1(k[1]) + '</b><span>белки</span></div>' +
-      '<div><b>' + fmt1(k[2]) + '</b><span>жиры</span></div><div><b>' + fmt1(k[3]) + '</b><span>углеводы</span></div><div><b>' + fmt1(k[4] || 0) + '</b><span>клетчатка</span></div></div>';
-  }
   function row(name, qty, sub){ return '<li><span class="ing-n">' + name + '</span><span class="ing-q">' + qty + '</span>' + (sub ? '<span class="ing-s">' + sub + '</span>' : '') + '</li>'; }
   function qtyOf(i, a){
     if (i.piece && (a.byWeight || a.mine) && !i.noMass) return fmt(a.g) + ' г · ≈ ' + fmt1(a.cnt) + ' ' + (Math.abs(a.cnt - Math.round(a.cnt)) > 0.05 ? i.piece.words[1] : plural(a.cnt, i.piece.words));
@@ -460,20 +456,16 @@ function mount(root, rec){
     (C.serving || []).forEach(function(v){ notes.push(['spice', '<b>' + esc(v.t) + ':</b> ' + esc(v.x)]); });
     $('cNotes').innerHTML = notes.map(function(n){ return '<li' + (n[0] ? ' class="' + n[0] + '"' : '') + '>' + n[1] + '</li>'; }).join('');
     /* факты */
-    var out = r.por
-      ? r.N + ' ' + plural(r.N, U) + ' по ' + fmt(r.Pact) + '&nbsp;г ' + C.portion.what + ', всего ' + fmt(r.perMass) + '&nbsp;г'
-      : r.N + ' ' + plural(r.N, U) + ', каждая ≈ ' + fmt(r.Pact) + ' г';
-    $('cFacts').innerHTML = '<dt>Выход</dt><dd>' + out + '</dd>' + (C.facts || []).map(function(f){ return '<dt>' + esc(f[0]) + '</dt><dd>' + esc(f[1]) + '</dd>'; }).join('');
+    var presentation = C.presentation || {};
+    var view = {
+      raw:r.raw, ready:r.ready, N:r.N, what:presentation.what,
+      form:typeof presentation.form === 'function' ? presentation.form(r) : presentation.form,
+      cooking:presentation.cooking, after:presentation.after,
+      k100raw:r.k100raw, k100:r.k100, kOne:r.kOne
+    };
+    $('cFacts').innerHTML = window.RecipeView.facts(view);
     /* КБЖУ */
-    var kh = '';
-    if (r.lossy){
-      kh += '<p class="label">КБЖУ на 100 г ' + esc(C.rawWord || 'до приготовления') + '</p>' + kbju(r.k100raw);
-      kh += '<p class="label" style="margin-top:14px">На 100 г ' + esc(C.readyWord || 'готового блюда') + '</p>' + kbju(r.k100);
-    } else kh += '<p class="label">КБЖУ на 100 г</p>' + kbju(r.k100);
-    kh += '<p class="label" style="margin-top:14px">На 1 ' + esc(U[0].replace(/а$/, 'у').replace(/я$/, 'ю')) + '</p>' + kbju(r.kOne);
-    kh += '<p class="kbju-unit">Белки, жиры, углеводы и клетчатка — в граммах.</p>';
-    if (r.lossy) kh += '<p class="hint" style="margin-top:8px">При приготовлении уходит около ' + Math.round((1 - r.ready / r.raw) * 100) + '% влаги: из ' + fmt(r.raw) + ' г выйдет примерно ' + fmt(r.ready) + ' г. Поэтому в 100 г готового калорий и БЖУ больше.</p>';
-    $('cKbju').innerHTML = kh;
+    $('cKbju').innerHTML = window.RecipeView.nutrition(view);
     /* шаги */
     var q = {
       a: function(id){ return amountText(r, id); },
