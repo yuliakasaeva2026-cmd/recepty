@@ -28,8 +28,10 @@
   Правило: в рецептах показываем только удачные сочетания. Если вариант не подходит
   к какому-то случаю, для этого случая его не показываем.
 
-  Справочник посуды (dishes): группа, название, примечание, вес в граммах.
-  Порядок групп задаёт dishGroups; внутри группы книга сама сортирует от лёгкой к тяжёлой.
+  Справочники посуды (dishes): kind — cooking/table, group — тип, name — название, g — вес в граммах.
+  size — размер для сортировки внутри типа: литры/см или 1 = малая, 2 = средняя, 3 = большая.
+  Без size предмет идёт после предметов с известным размером. Типы — по алфавиту;
+  cooking: размер, вес; table: размер, название, вес.
 
   Рецепт-конструктор (module: 'recept', данные в calc): порции или штуки, свои количества (locks),
   варианты (options) и добавки по желанию (extras). Ингредиент: id, name, g — граммы в вашем рецепте, n — КБЖУ на 100 г,
@@ -522,9 +524,30 @@ window.BOOK = {
       foot: ''
     }
   },
-  dishGroups: ['Кастрюли', 'Сотейники', 'Сковороды', 'Формы для запекания', 'Противни', 'Миски и контейнеры'],
   dishes: [
-    { id: 'taller-4l', group: 'Кастрюли', name: 'Taller средняя, 4 л', note: 'без крышки', g: 827 },
-    { id: 'taller-6l', group: 'Кастрюли', name: 'Taller большая, 6 л', note: 'без крышки', g: 1175 }
+    { id: 'taller-4l', kind: 'cooking', group: 'Кастрюли', size: 4, name: 'Кастрюля 4 л Taller', g: 825 },
+    { id: 'taller-6l', kind: 'cooking', group: 'Кастрюли', size: 6, name: 'Кастрюля 6 л Taller', g: 1175 },
+    { id: 'tefal-14l', kind: 'cooking', group: 'Ковши', size: 1.4, name: 'Ковш 1,4 л Tefal', g: 492 },
+    { id: 'tefal-steel-15l', kind: 'cooking', group: 'Ковши', size: 1.5, name: 'Ковш 1,5 л сталь Tefal', g: 469 },
+    { id: 'pancake-24', kind: 'cooking', group: 'Сковороды', size: 24, name: 'Сковорода 24 см блинная', g: 488 },
+    { id: 'rondell-24', kind: 'cooking', group: 'Сковороды', size: 24, name: 'Сковорода 24 см Rondell', g: 838 },
+    { id: 'tefal-24', kind: 'cooking', group: 'Сковороды', size: 24, name: 'Сковорода 24 см Tefal', g: 909 },
+    { id: 'tefal-28', kind: 'cooking', group: 'Сковороды', size: 28, name: 'Сковорода 28 см неглубокая Tefal', g: 1031 },
+    { id: 'rondell-28', kind: 'cooking', group: 'Сковороды', size: 28, name: 'Сковорода 28 см неглубокая Rondell', g: 1102 },
+    { id: 'rondell-wok-28', kind: 'cooking', group: 'Сковороды', size: 28, name: 'Сковорода 28 см глубокая-вок Rondell', g: 1187 },
+    { id: 'glass-small', kind: 'cooking', group: 'Формы', size: 1, name: 'Форма стеклянная малая', g: 1077 },
+    { id: 'glass-large', kind: 'cooking', group: 'Формы', size: 3, name: 'Форма стеклянная большая', g: 1787 },
+    { id: 'multicooker-handles', kind: 'cooking', group: 'Чаши', name: 'Чаша для мультиварки с ручками', g: 665 },
+    { id: 'multicooker', kind: 'cooking', group: 'Чаши', name: 'Чаша для мультиварки', g: 695 },
+    { id: 'bowl-green-small-set', kind: 'table', group: 'Миски', size: 1, name: 'Миска зелёная малая (набор)', g: 52 },
+    { id: 'bowl-green-medium-set', kind: 'table', group: 'Миски', size: 2, name: 'Миска зелёная средняя (набор)', g: 68 },
+    { id: 'bowl-green-large', kind: 'table', group: 'Миски', size: 3, name: 'Миска зелёная большая', g: 200 },
+    { id: 'bowl-green-large-set', kind: 'table', group: 'Миски', size: 3, name: 'Миска зелёная большая (набор)', g: 123 },
+    { id: 'salad-luminarc-12', kind: 'table', group: 'Салатники', size: 12, name: 'Салатник 12 см 350 мл стекло Luminarc', g: 236 },
+    { id: 'salad-white-blue', kind: 'table', group: 'Салатники', name: 'Салатник бело-голубой', g: 377 },
+    { id: 'salad-brown-1', kind: 'table', group: 'Салатники', name: 'Салатник коричневый 1', g: 409 },
+    { id: 'salad-brown-2', kind: 'table', group: 'Салатники', name: 'Салатник коричневый 2', g: 421 },
+    { id: 'salad-grey-blue', kind: 'table', group: 'Салатники', name: 'Салатник серо-голубой', g: 475 },
+    { id: 'salad-grey-pink', kind: 'table', group: 'Салатники', name: 'Салатник серо-розовый', g: 451 }
   ]
 };

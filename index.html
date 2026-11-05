@@ -291,10 +291,11 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
         return '<a class="tile' + (c ? '' : ' empty') + '" href="#s-' + esc(s.id) + '"><span class="tile-count">' + c + '</span><span><span class="tile-name">' + esc(s.name) + '</span>' +
           '<span class="tile-sub" style="display:block">' + (c ? c + ' ' + plural(c, ['рецепт','рецепта','рецептов']) : 'пока пусто') + '</span></span></a>';
       }).join('') + '</div>';
-    var nd = DISHES.length;
+    var nc = dishesFor('cooking').length, nt = dishesFor('table').length;
     html += '<h2 class="sec-h">На кухне</h2><div class="tiles">' +
-      '<a class="tile" href="#ves"><span class="tool-ic">' + ICON_SCALE + '</span><span><span class="tile-name">Вес еды без посуды</span><span class="tile-sub" style="display:block">вычесть вес кастрюли</span></span></a>' +
-      '<a class="tile" href="#posuda"><span class="tool-ic">' + ICON_POT + '</span><span><span class="tile-name">Справочник посуды</span><span class="tile-sub" style="display:block">' + (nd ? nd + ' ' + plural(nd, ['предмет','предмета','предметов']) : 'пока пусто') + '</span></span></a>' +
+      '<a class="tile" href="#ves"><span class="tool-ic">' + ICON_SCALE + '</span><span><span class="tile-name">Вес еды без посуды</span><span class="tile-sub" style="display:block">вычесть вес посуды</span></span></a>' +
+      '<a class="tile" href="#posuda"><span class="tool-ic">' + ICON_POT + '</span><span><span class="tile-name">Вес посуды для приготовления</span><span class="tile-sub" style="display:block">Справочник · ' + nc + ' ' + plural(nc, ['предмет','предмета','предметов']) + '</span></span></a>' +
+      '<a class="tile" href="#posuda-stol"><span class="tool-ic">' + ICON_POT + '</span><span><span class="tile-name">Вес столовой посуды</span><span class="tile-sub" style="display:block">Справочник · ' + nt + ' ' + plural(nt, ['предмет','предмета','предметов']) + '</span></span></a>' +
       (BOOK.doneness ? '<a class="tile" href="#temp"><span class="tool-ic">' + ICON_TEMP + '</span><span><span class="tile-name">Температура готовности</span><span class="tile-sub" style="display:block">внутри мяса, рыбы, сырников</span></span></a>' : '') +
       (BOOK.cooking ? '<a class="tile" href="#vremya"><span class="tool-ic">' + ICON_CLOCK + '</span><span><span class="tile-name">Время и температура</span><span class="tile-sub" style="display:block">сырники, котлеты, су-вид</span></span></a>' : '') + '</div>';
     var fl = sorted(BOOK.recipes.filter(function(r){ return isFav(r.id); }));
@@ -347,43 +348,60 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   function grams(v){ return String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
   function parseG(str){ var v = parseFloat(String(str || '').replace(/\s/g, '').replace(',', '.')); return isNaN(v) || v < 0 ? null : v; }
   function dishById(id){ return DISHES.filter(function(d){ return d.id === id; })[0]; }
-  function dishGroups(){
-    var order = BOOK.dishGroups || [], groups = {};
-    DISHES.forEach(function(d){ var g = d.group || 'Другое'; (groups[g] = groups[g] || []).push(d); });
-    return Object.keys(groups).sort(function(a, b){
-      var ia = order.indexOf(a), ib = order.indexOf(b); if (ia < 0) ia = 999; if (ib < 0) ib = 999;
-      return ia - ib || a.localeCompare(b, 'ru');
-    }).map(function(n){ return { name: n, items: groups[n].slice().sort(function(a, b){ return a.g - b.g || a.name.localeCompare(b.name, 'ru'); }) }; });
+  function dishesFor(kind){
+    return DISHES.filter(function(d){ return (d.kind || 'cooking') === kind; });
   }
-  function posuda(){
-    var gs = dishGroups();
-    view.innerHTML = '<section class="r-head"><span class="eyebrow">На кухне</span><h1>Справочник посуды</h1><p class="lead">Вес пустой посуды. В каждой группе от лёгкой к тяжёлой.</p></section>' +
-      '<div class="stack">' + (DISHES.length ? gs.map(function(g){
+  function dishGroups(kind){
+    var groups = {};
+    dishesFor(kind).forEach(function(d){ var g = d.group || 'Другое'; (groups[g] = groups[g] || []).push(d); });
+    return Object.keys(groups).sort(function(a, b){ return a.localeCompare(b, 'ru'); }).map(function(n){
+      return { name: n, items: groups[n].slice().sort(function(a, b){
+        var sa = a.size == null ? Infinity : a.size, sb = b.size == null ? Infinity : b.size;
+        if (sa !== sb) return sa < sb ? -1 : 1;
+        if (kind === 'table') return a.name.localeCompare(b.name, 'ru', { numeric: true }) || a.g - b.g;
+        return a.g - b.g || a.name.localeCompare(b.name, 'ru');
+      }) };
+    });
+  }
+  function posuda(kind){
+    var gs = dishGroups(kind), table = kind === 'table';
+    var title = table ? 'Вес столовой посуды' : 'Вес посуды для приготовления';
+    var order = table ? 'Внутри типа — по размеру, названию и весу.' : 'Внутри типа — по размеру, затем по весу.';
+    view.innerHTML = '<section class="r-head"><span class="eyebrow">Справочник</span><h1>' + title + '</h1><p class="lead">Вес пустой посуды. Типы по алфавиту. ' + order + '</p></section>' +
+      '<div class="stack">' + (gs.length ? gs.map(function(g){
         return '<section class="block"><h2>' + esc(g.name) + '</h2><ul class="ing">' + g.items.map(function(d){
           return '<li><a class="ing-n dish-link" href="#ves-' + esc(d.id) + '">' + esc(d.name) + '</a><span class="ing-q">' + grams(d.g) + ' г</span>' + (d.note ? '<span class="ing-s">' + esc(d.note) + '</span>' : '') + '</li>';
         }).join('') + '</ul></section>';
-      }).join('') : empty('Справочник пока пустой', 'Напишите Claude название посуды и её вес.')) + '</div>' +
-      '<p class="page-foot">Нажмите на посуду, чтобы взвесить в ней еду. Чтобы добавить посуду, напишите Claude название и вес.</p>';
+      }).join('') : empty('Справочник пока пустой', 'Добавьте название посуды и её вес.')) + '</div>' +
+      '<p class="page-foot">Нажмите на посуду, чтобы взвесить в ней еду.</p>';
   }
   function ves(preId){
-    var saved = store('book-ves') || {};
-    var sel = preId && dishById(preId) ? preId : (saved.dish === 'custom' || dishById(saved.dish) ? saved.dish : (DISHES.length ? dishGroups()[0].items[0].id : 'custom'));
-    var opts = dishGroups().map(function(g){
-      return '<optgroup label="' + esc(g.name) + '">' + g.items.map(function(d){ return '<option value="' + esc(d.id) + '">' + esc(d.name) + ' — ' + grams(d.g) + ' г</option>'; }).join('') + '</optgroup>';
-    }).join('') + '<option value="custom">Другая посуда, впишу вес</option>';
-    view.innerHTML = '<section class="r-head"><span class="eyebrow">На кухне</span><h1>Вес еды без посуды</h1><p class="lead">Взвесьте посуду вместе с готовой едой и выберите посуду: книга вычтет её вес.</p></section>' +
+    var saved = store('book-ves') || {}, cooking = dishGroups('cooking');
+    var sel = preId && dishById(preId) ? preId : (saved.dish === 'custom' || dishById(saved.dish) ? saved.dish : (cooking.length ? cooking[0].items[0].id : 'custom'));
+    function options(kind){
+      return dishGroups(kind).map(function(g){
+        return '<optgroup label="' + esc(g.name) + '">' + g.items.map(function(d){ return '<option value="' + esc(d.id) + '">' + esc(d.name) + ' — ' + grams(d.g) + ' г</option>'; }).join('') + '</optgroup>';
+      }).join('') + '<option value="custom">Другая посуда</option>';
+    }
+    view.innerHTML = '<section class="r-head"><span class="eyebrow">На кухне</span><h1>Вес еды без посуды</h1><p class="lead">Взвесьте посуду вместе с едой и выберите её в одном из списков: книга вычтет её вес.</p></section>' +
       '<div class="r-grid ves-grid"><section class="block">' +
         '<div class="field"><label class="label" for="vTotal">Общий вес с посудой</label><div class="inrow"><div class="num"><input id="vTotal" type="text" inputmode="decimal" autocomplete="off" placeholder="например, 2650"><span>г</span></div></div></div>' +
-        '<div class="field"><label class="label" for="vDish">Посуда</label><select id="vDish" class="select">' + opts + '</select><p class="state" id="vNote"></p></div>' +
+        '<div class="field"><label class="label" for="vDish">Посуда для приготовления</label><select id="vDish" class="select">' + options('cooking') + '</select><p class="state" id="vNote"></p></div>' +
+        '<div class="field"><label class="label" for="vTableDish">Столовая посуда</label><select id="vTableDish" class="select">' + options('table') + '</select><p class="state" id="vTableNote"></p></div>' +
         '<div class="field" id="vCustomBox" hidden><label class="label" for="vCustom">Вес пустой посуды</label><div class="inrow"><div class="num"><input id="vCustom" type="text" inputmode="decimal" autocomplete="off"><span>г</span></div></div></div>' +
       '</section><section class="dish net-box" aria-live="polite"><p class="label">Чистый вес еды</p><p class="net" id="vNet">—</p><p class="hint" id="vCalc">Впишите общий вес.</p></section></div>' +
-      '<p class="page-foot"><a href="#posuda">Открыть справочник посуды</a></p>';
-    var vTotal = document.getElementById('vTotal'), vDish = document.getElementById('vDish'), vCustom = document.getElementById('vCustom');
-    vDish.value = sel; if (saved.custom) vCustom.value = saved.custom;
+      '<p class="page-foot">Справочники: <a href="#posuda">Вес посуды для приготовления</a> · <a href="#posuda-stol">Вес столовой посуды</a></p>';
+    var vTotal = document.getElementById('vTotal'), vDish = document.getElementById('vDish'), vTableDish = document.getElementById('vTableDish'), vCustom = document.getElementById('vCustom');
+    var selected = dishById(sel);
+    vDish.value = selected && selected.kind !== 'table' ? sel : 'custom';
+    vTableDish.value = selected && selected.kind === 'table' ? sel : 'custom';
+    if (saved.custom) vCustom.value = saved.custom;
+    function note(d){ return d ? 'Вес пустой посуды: ' + grams(d.g) + ' г' + (d.note ? ', ' + d.note : '') + '.' : ''; }
     function calc(){
-      var id = vDish.value, d = dishById(id), custom = id === 'custom';
+      var id = vDish.value !== 'custom' ? vDish.value : vTableDish.value, d = dishById(id), custom = !d;
       document.getElementById('vCustomBox').hidden = !custom;
-      document.getElementById('vNote').textContent = d ? 'Пустая: ' + grams(d.g) + ' г' + (d.note ? ', ' + d.note + '. Взвешивайте так же' + (/без крышки/.test(d.note) ? ', без крышки.' : '.') : '.') : '';
+      document.getElementById('vNote').textContent = note(dishById(vDish.value));
+      document.getElementById('vTableNote').textContent = note(dishById(vTableDish.value));
       var total = parseG(vTotal.value), dw = custom ? parseG(vCustom.value) : d.g;
       var net = document.getElementById('vNet'), how = document.getElementById('vCalc');
       net.textContent = '—';
@@ -391,9 +409,12 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       else if (dw == null) how.textContent = 'Впишите вес пустой посуды.';
       else if (total <= dw) how.textContent = 'Общий вес не больше веса посуды. Проверьте числа.';
       else { net.textContent = grams(total - dw) + ' г'; how.textContent = grams(total) + ' − ' + grams(dw) + ' (' + (custom ? 'ваша посуда' : d.name) + ') = ' + grams(total - dw) + ' г'; }
-      store('book-ves', { dish: id, custom: vCustom.value });
+      store('book-ves', { dish: custom ? 'custom' : id, custom: vCustom.value });
     }
-    vTotal.addEventListener('input', calc); vDish.addEventListener('change', calc); vCustom.addEventListener('input', calc);
+    vTotal.addEventListener('input', calc);
+    vDish.addEventListener('change', function(){ if (vDish.value !== 'custom') vTableDish.value = 'custom'; calc(); });
+    vTableDish.addEventListener('change', function(){ if (vTableDish.value !== 'custom') vDish.value = 'custom'; calc(); });
+    vCustom.addEventListener('input', calc);
     calc();
   }
 
@@ -493,7 +514,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       starBtn.hidden = true; starBtn.onclick = null;
       if ((m = /^s-(.+)$/.exec(h)) && secById[m[1]]){ section(m[1]); page = 's'; }
       else if (h === 'fav'){ favorites(); page = 'fav'; }
-      else if (h === 'posuda'){ posuda(); page = 'posuda'; }
+      else if (h === 'posuda'){ posuda('cooking'); page = 'posuda'; }
+      else if (h === 'posuda-stol'){ posuda('table'); page = 'posuda'; }
       else if (h === 'temp' && BOOK.doneness){ temp(); page = 'temp'; }
       else if (h === 'vremya' && BOOK.cooking){ vremya(); page = 'vremya'; }
       else if (h === 'ves'){ ves(); page = 'ves'; }
